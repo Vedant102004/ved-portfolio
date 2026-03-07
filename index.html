@@ -402,23 +402,70 @@ body.clk #cur-blob{width:14px;height:14px}
 .b-city-sub{font-size:.62rem;color:var(--txt2);margin-top:.2rem}
 
 /* ══════════════════════════════════════════════
-   WORK — HORIZONTAL SCROLL
+   WORK — NATIVE SCROLL SNAP
 ══════════════════════════════════════════════ */
-#work-section{position:relative}
-#work-sticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--bg1)}
-.wk-head{position:absolute;top:3.5rem;left:5rem;right:5rem;z-index:10;display:flex;align-items:flex-end;justify-content:space-between}
+#work-section{
+  padding:5rem 0 6rem;
+  background:var(--bg1);
+  position:relative;
+  overflow:hidden;
+}
+.wk-inner{max-width:100%;position:relative}
+.wk-head{
+  padding:0 5rem;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:2.5rem;
+}
 .wk-ctr{font-family:'Bricolage Grotesque',sans-serif;font-size:.85rem;font-weight:700;color:var(--txt2)}
 .wk-ctr em{color:var(--v2);font-style:normal;font-size:1.1rem}
-#work-track{display:flex;align-items:center;height:100%;padding:0 5rem;gap:2rem;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translate3d(0,0,0)}
+
+/* Native scroll container */
+#work-track{
+  display:flex;
+  gap:2rem;
+  padding:1rem 5rem 2rem;
+  overflow-x:auto;
+  overflow-y:visible;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  cursor:grab;
+}
+#work-track::-webkit-scrollbar{display:none}
+#work-track.grabbing{cursor:grabbing}
+
+/* fade edges */
+#work-section::before,#work-section::after{
+  content:'';position:absolute;top:0;bottom:0;width:80px;z-index:10;pointer-events:none;
+}
+#work-section::before{left:0;background:linear-gradient(to right,var(--bg1),transparent)}
+#work-section::after{right:0;background:linear-gradient(to left,var(--bg1),transparent)}
+
+/* dot indicators */
+.wk-dots{display:flex;gap:.5rem;justify-content:center;margin-top:1.8rem;padding:0 5rem}
+.wk-dot{
+  width:6px;height:6px;border-radius:100px;
+  background:var(--bd2);transition:width .3s var(--spring),background .3s;cursor:pointer;
+}
+.wk-dot.active{width:22px;background:var(--v2)}
+
+.wk-hint{text-align:center;font-size:.65rem;color:var(--txt2);margin-top:1rem;opacity:.7}
+
 /* cards */
 .pc{
   flex:0 0 400px;height:555px;border-radius:20px;overflow:hidden;
-  position:relative;cursor:none;
+  position:relative;cursor:pointer;
   border:1px solid var(--bd);background:var(--bg2);
-  transition:border-color .4s,box-shadow .4s;
+  scroll-snap-align:start;
+  transition:border-color .4s,box-shadow .4s,transform .3s var(--spring);
   transform-style:preserve-3d;
+  will-change:transform;
 }
-.pc:hover{border-color:rgba(167,139,250,.28);box-shadow:0 30px 80px var(--shadow)}
+.pc:hover{
+  border-color:rgba(167,139,250,.28);
+  box-shadow:0 30px 80px var(--shadow);
+  transform:translateY(-5px);
+}
 .pc-accent{position:absolute;top:0;left:0;right:0;height:2px;z-index:4;opacity:0;transition:opacity .4s}
 .pc:hover .pc-accent{opacity:1}
 .pc-a1{background:linear-gradient(to right,var(--v),var(--c))}
@@ -625,10 +672,10 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
   .b-c1,.b-c2,.b-c3,.b-c4,.b-c5,.b-c6,.b-c7,.b-c8{grid-column:span 2;grid-row:auto;min-height:unset}
   .sv-grid,.tm-grid,.pr-grid{grid-template-columns:1fr}
   .ct-grid{grid-template-columns:1fr;gap:3rem}
-  .wk-head{left:1.5rem;right:1.5rem}
-  #work-track{padding:0 1.5rem;gap:1.5rem}
+  .wk-head{padding:0 1.5rem}
+  #work-track{padding:1rem 1.5rem 2rem;gap:1.2rem}
+  .wk-dots{padding:0 1.5rem}
   .pc{flex:0 0 300px;height:460px}
-  .wk-hint{right:1.5rem}
   .h-btns{flex-direction:column}
   body{cursor:auto}#cur-blob,#cur-dot{display:none}
   footer,.ft{padding:1.5rem;flex-direction:column;align-items:flex-start}
@@ -804,10 +851,10 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
   </div>
 </section>
 
-<!-- WORK — HORIZONTAL SCROLL -->
-<div id="work-section">
-  <div id="work-sticky">
-    <div class="aura a1" style="opacity:.15"></div>
+<!-- WORK — NATIVE SCROLL SNAP -->
+<section id="work-section">
+  <div class="aura a1" style="opacity:.12"></div>
+  <div class="wk-inner">
     <div class="wk-head">
       <div>
         <div class="eyebrow">Portfolio</div>
@@ -815,6 +862,7 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
       </div>
       <div class="wk-ctr"><em id="wCur">01</em> / 05</div>
     </div>
+
     <div id="work-track">
 
       <div class="pc" onclick="window.open('https://bistro-cafe-eight.vercel.app/','_blank')">
@@ -882,10 +930,19 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
         </div>
       </div>
 
+    </div><!-- end work-track -->
+
+    <!-- Dot indicators -->
+    <div class="wk-dots">
+      <div class="wk-dot active" onclick="scrollToCard(0)"></div>
+      <div class="wk-dot" onclick="scrollToCard(1)"></div>
+      <div class="wk-dot" onclick="scrollToCard(2)"></div>
+      <div class="wk-dot" onclick="scrollToCard(3)"></div>
+      <div class="wk-dot" onclick="scrollToCard(4)"></div>
     </div>
-    <div class="wk-hint">↔ Drag or scroll to explore</div>
+    <div class="wk-hint">Swipe or drag to explore projects</div>
   </div>
-</div>
+</section>
 
 <!-- PROCESS -->
 <section id="process">
@@ -1117,9 +1174,9 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
     <div class="ct-grid">
       <div class="rv">
         <p style="font-size:.9rem;color:var(--txt2);line-height:1.9;margin-bottom:2rem">Have a restaurant or food brand that deserves a world-class website? I reply within 24 hours — always.</p>
-        <a href="mailto:baheved@gmail.com" class="ctm">
+        <a href="/cdn-cgi/l/email-protection#5d3f3c35382b38391d3a303c3431733e3230" class="ctm">
           <div class="ctm-ico">✉️</div>
-          <div><div class="ctm-lbl">Email</div><div class="ctm-val">baheved@gmail.com</div></div>
+          <div><div class="ctm-lbl">Email</div><div class="ctm-val"><span class="__cf_email__" data-cfemail="214340494457444561464c40484d0f424e4c">[email&#160;protected]</span></div></div>
         </a>
         <a href="https://wa.me/919993498363" target="_blank" class="ctm">
           <div class="ctm-ico">💬</div>
@@ -1143,7 +1200,7 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
           <div class="ct-avail"><div class="ct-avail-dot"></div>Open for new projects</div>
           <div class="ct-quote">Your restaurant deserves a website as <em>extraordinary</em> as your food.</div>
           <p class="ct-body">I don't just build websites — I build digital experiences that bring real customers, real bookings, and real revenue. Let's make your brand impossible to ignore online.</p>
-          <a href="mailto:baheved@gmail.com" class="ct-cta">Send a Message →</a>
+          <a href="/cdn-cgi/l/email-protection#e381828b86958687a3848e828a8fcd808c8e" class="ct-cta">Send a Message →</a>
           <div class="ct-guarantee">No hidden costs · Pay only when you're satisfied</div>
         </div>
       </div>
@@ -1157,7 +1214,7 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
     <div class="ft-copy">© 2025 · Premium Web Design · India 🇮🇳</div>
     <div class="ft-lnks">
       <a href="#work-section">Work</a>
-      <a href="mailto:baheved@gmail.com">Email</a>
+      <a href="/cdn-cgi/l/email-protection#305251585546555470575d51595c1e535f5d">Email</a>
       <a href="https://wa.me/919993498363" target="_blank">WhatsApp</a>
     </div>
   </div>
@@ -1165,7 +1222,7 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
 
 <button id="stt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ── CURSOR ── */
 const blob=document.getElementById('cur-blob'),dot=document.getElementById('cur-dot');
 let mx=0,my=0,bx=0,by=0;
@@ -1332,81 +1389,53 @@ function toggleFaq(btn){
   item.classList.toggle('open');
 }
 
-/* ── HORIZONTAL SCROLL ── */
+/* ── WORK SECTION — NATIVE SCROLL (zero lag) ── */
 (()=>{
-  const sec=document.getElementById('work-section');
-  const track=document.getElementById('work-track');
-  const cards=document.querySelectorAll('.pc');
-  const ctr=document.getElementById('wCur');
-  let tX=0, lX=0, secTop=0, secH=0, rafId=null, isActive=false;
+  const track = document.getElementById('work-track');
+  const cards = document.querySelectorAll('.pc');
+  const ctr   = document.getElementById('wCur');
+  const dots  = document.querySelectorAll('.wk-dot');
+  if(!track) return;
 
-  /* Cache layout values — only recalculate on resize, not every scroll */
-  function cache(){
-    const r=sec.getBoundingClientRect();
-    secTop=window.scrollY+r.top;
-    secH=sec.offsetHeight-window.innerHeight;
-    sec.style.height=(maxX()+window.innerHeight+120)+'px';
-    /* re-cache after height change */
-    secTop=sec.offsetTop;
-  }
-  const maxX=()=>Math.max(0,track.scrollWidth-window.innerWidth+160);
-  cache();
-  window.addEventListener('resize',()=>{cache();},{ passive:true });
+  /* scroll to card by index — used by dot clicks */
+  window.scrollToCard = (i) => {
+    const card = cards[i];
+    if(!card) return;
+    track.scrollTo({ left: card.offsetLeft - 80, behavior: 'smooth' });
+  };
 
-  /* Scroll → map to horizontal — uses cached values, no reflow */
-  window.addEventListener('scroll',()=>{
-    const scrolled=window.scrollY-secTop;
-    if(scrolled>=0 && scrolled<=secH){
-      tX=Math.max(0,Math.min((scrolled/secH)*maxX(),maxX()));
-      if(!isActive){ isActive=true; tick(); }
-    }
-  },{ passive:true });
+  /* Update counter + dots — passive, zero reflow */
+  track.addEventListener('scroll', () => {
+    const center = track.scrollLeft + track.clientWidth / 2;
+    let closest = 0, minDist = Infinity;
+    cards.forEach((c, i) => {
+      const dist = Math.abs((c.offsetLeft + c.offsetWidth / 2) - center);
+      if(dist < minDist){ minDist = dist; closest = i; }
+    });
+    ctr.textContent = String(closest + 1).padStart(2, '0');
+    dots.forEach((d, i) => d.classList.toggle('active', i === closest));
+  }, { passive: true });
 
-  /* Drag */
-  let drag=false, sX=0, sS=0;
-  track.addEventListener('mousedown',e=>{ drag=true; sX=e.clientX; sS=tX; track.style.cursor='grabbing'; });
-  window.addEventListener('mouseup',()=>{ drag=false; track.style.cursor=''; });
-  window.addEventListener('mousemove',e=>{
-    if(!drag) return;
-    tX=Math.max(0,Math.min(sS-(e.clientX-sX)*1.5, maxX()));
-    if(!isActive){ isActive=true; tick(); }
-  },{ passive:true });
-
-  /* Touch */
-  let tx0=0, ts0=0;
-  track.addEventListener('touchstart',e=>{ tx0=e.touches[0].clientX; ts0=tX; },{ passive:true });
-  track.addEventListener('touchmove',e=>{
-    tX=Math.max(0,Math.min(ts0-(e.touches[0].clientX-tx0)*1.5, maxX()));
-    if(!isActive){ isActive=true; tick(); }
-  },{ passive:true });
-
-  /* RAF — only runs when needed, stops when caught up */
-  function tick(){
-    const diff=tX-lX;
-    /* Lerp: 0.18 = snappy but still smooth */
-    lX+=diff*0.18;
-
-    /* GPU-accelerated transform */
-    track.style.transform=`translate3d(${-lX}px,0,0)`;
-
-    /* Update counter only when visible change */
-    const idx=Math.round((lX/Math.max(1,maxX()))*(cards.length-1));
-    ctr.textContent=String(Math.max(0,Math.min(idx,cards.length-1))+1).padStart(2,'0');
-
-    /* Stop RAF when close enough — saves CPU */
-    if(Math.abs(diff)>0.5){
-      rafId=requestAnimationFrame(tick);
-    } else {
-      lX=tX;
-      track.style.transform=`translate3d(${-lX}px,0,0)`;
-      isActive=false;
-    }
-  }
+  /* Mouse drag */
+  let isDown = false, startX = 0, scrollStart = 0;
+  track.addEventListener('mousedown', e => {
+    isDown = true; startX = e.pageX; scrollStart = track.scrollLeft;
+    track.classList.add('grabbing');
+  });
+  window.addEventListener('mouseup', () => { isDown = false; track.classList.remove('grabbing'); });
+  window.addEventListener('mousemove', e => {
+    if(!isDown) return;
+    e.preventDefault();
+    track.scrollLeft = scrollStart - (e.pageX - startX);
+  });
 })();
 
 /* ── SMOOTH SCROLL ── */
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}});
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if(t){ e.preventDefault(); t.scrollIntoView({ behavior:'smooth', block:'start' }); }
+  });
 });
 </script>
 </body>
