@@ -479,7 +479,7 @@ body.clk #cur-blob{width:14px;height:14px}
 .btn-magic:hover::before{opacity:1}
 .btn-ghost{
   padding:.9rem 2rem;border-radius:100px;background:var(--surf);
-  color:var(--txt2);border:1px solid var(--bd2);font-size:.83rem;font-weight:500;
+  color:var(--txt2);border:1.5px solid var(--bd2);font-size:.83rem;font-weight:600;
   cursor:none;transition:background .25s,color .25s,border-color .25s,transform .2s var(--spring);
 }
 .btn-ghost:hover{background:var(--surf2);color:var(--txt);transform:translateY(-2px)}
@@ -804,6 +804,24 @@ body.clk #cur-blob{width:14px;height:14px}
 /* guarantee */
 .ct-guarantee{display:flex;align-items:center;gap:.6rem;margin-top:1.2rem;font-size:.7rem;color:var(--txt2);justify-content:center;position:relative;z-index:1}
 .ct-guarantee::before{content:'🛡️'}
+/* contact form inputs */
+.ct-form{display:flex;flex-direction:column;gap:.85rem;position:relative;z-index:1}
+.ct-inp,.ct-ta{
+  width:100%;padding:.85rem 1.1rem;border-radius:12px;
+  background:var(--bg);border:1px solid var(--bd2);
+  color:var(--txt);font-size:.82rem;font-family:inherit;
+  outline:none;transition:border-color .2s,box-shadow .2s;
+  box-sizing:border-box;
+}
+.ct-inp:focus,.ct-ta:focus{border-color:var(--v2);box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+.ct-inp::placeholder,.ct-ta::placeholder{color:var(--txt2);opacity:.6}
+.ct-ta{resize:none;min-height:100px}
+.ct-form-row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+.ct-sent{display:none;text-align:center;padding:1.5rem;border-radius:14px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2)}
+.ct-sent-ico{font-size:2rem;margin-bottom:.5rem}
+.ct-sent-t{font-size:.9rem;font-weight:700;color:var(--g)}
+.ct-sent-s{font-size:.75rem;color:var(--txt2);margin-top:.3rem}
+@media(max-width:600px){.ct-form-row{grid-template-columns:1fr}}
 
 /* ══════════════════════════════════════════════
    FOOTER
@@ -845,7 +863,7 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
   #stats-row{padding:3rem 1.5rem}
   #nav{top:.7rem;padding:.4rem .4rem .4rem 1.2rem;max-width:calc(100vw - 2rem)}
   .n-links{display:none}.n-hbg{display:flex}
-  .h-h1{font-size:clamp(2.8rem,12vw,5rem)}
+  .h-h1{font-size:clamp(2.4rem,10vw,4.5rem)}
   .h-bottom{flex-direction:column;gap:2rem}.h-stats{display:none}
   .st-grid{grid-template-columns:repeat(2,1fr)}
   .st-item:nth-child(2){border-right:none}.st-item:nth-child(3){border-top:1px solid var(--bd)}
@@ -1149,8 +1167,8 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
           <a href="#contact" class="btn-ghost">Let's Talk</a>
         </div>
         <div class="h-stats" id="hStats">
-          <div class="hst"><div class="hst-n" id="sc1">0</div><div class="hst-l">Projects Live</div></div>
-          <div class="hst"><div class="hst-n">$0</div><div class="hst-l">Templates Used</div></div>
+          <div class="hst"><div class="hst-n" id="sc1">5</div><div class="hst-l">Projects Live</div></div>
+          <div class="hst"><div class="hst-n">0</div><div class="hst-l">Templates Used</div></div>
           <div class="hst"><div class="hst-n">24h</div><div class="hst-l">Reply Time</div></div>
         </div>
       </div>
@@ -1185,7 +1203,7 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
 
       <div class="gc b-c1 rv">
         <div class="b-init">Vedant <em>Bahe.</em></div>
-        <div class="b-role">Web Designer · Restaurant Specialist · Est. 2024</div>
+        <div class="b-role">Web Designer · Restaurant Specialist · 5 Sites Delivered</div>
         <p class="b-bio">Self-taught designer from India building cinematic, 100% custom websites for restaurants and food brands worldwide. Every pixel is intentional. Every animation earns its place. No templates, no shortcuts — just code and craft that converts visitors into customers.</p>
       </div>
 
@@ -1600,7 +1618,20 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
           <div class="ct-avail"><div class="ct-avail-dot"></div>Open for new projects</div>
           <div class="ct-quote">Your restaurant deserves a website as <em>extraordinary</em> as your food.</div>
           <p class="ct-body">I don't just build websites — I build digital experiences that bring real customers, real bookings, and real revenue. Let's make your brand impossible to ignore online.</p>
-          <a href="/cdn-cgi/l/email-protection#e381828b86958687a3848e828a8fcd808c8e" class="ct-cta">Send a Message →</a>
+          <form class="ct-form" id="ctForm" action="https://formspree.io/f/TUMHARA_FORM_ID" method="POST">
+            <div class="ct-form-row">
+              <input type="text" name="name" class="ct-inp" placeholder="Your Name" required>
+              <input type="email" name="email" class="ct-inp" placeholder="Your Email" required>
+            </div>
+            <input type="text" name="restaurant" class="ct-inp" placeholder="Restaurant / Brand Name">
+            <textarea name="message" class="ct-ta" placeholder="Tell me about your project..." required></textarea>
+            <button type="submit" class="ct-cta">Send Message →</button>
+          </form>
+          <div class="ct-sent" id="ctSent">
+            <div class="ct-sent-ico">🎉</div>
+            <div class="ct-sent-t">Message sent!</div>
+            <div class="ct-sent-s">I'll reply within 24 hours.</div>
+          </div>
           <div class="ct-guarantee">No hidden costs · Pay only when you're satisfied</div>
         </div>
       </div>
@@ -1986,6 +2017,26 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if(t){ e.preventDefault(); t.scrollIntoView({ behavior:'smooth', block:'start' }); }
   });
 });
+
+// Contact form AJAX submit
+const ctForm=document.getElementById('ctForm');
+if(ctForm){
+  ctForm.addEventListener('submit',async function(e){
+    e.preventDefault();
+    const btn=ctForm.querySelector('button[type="submit"]');
+    btn.textContent='Sending...';btn.disabled=true;
+    try{
+      const res=await fetch(ctForm.action,{method:'POST',body:new FormData(ctForm),headers:{Accept:'application/json'}});
+      if(res.ok){
+        ctForm.style.display='none';
+        document.getElementById('ctSent').style.display='block';
+      } else {
+        btn.textContent='Send Message →';btn.disabled=false;
+        alert('Something went wrong. Please try again.');
+      }
+    }catch{btn.textContent='Send Message →';btn.disabled=false;}
+  });
+}
 </script>
 </body>
 </html>
