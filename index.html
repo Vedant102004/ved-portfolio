@@ -475,8 +475,10 @@ body.clk #cur-blob{width:14px;height:14px}
 .pc-a5{background:linear-gradient(to right,var(--g),var(--c))}
 .pc-bg{position:absolute;inset:0;overflow:hidden;transition:transform .7s var(--ease)}
 .pc:hover .pc-bg{transform:scale(1.04)}
-.pc-iw{width:100%;height:100%;position:relative;background:var(--bg)}
-.pc-if{position:absolute;top:0;left:0;width:1440px;height:900px;transform:scale(0.278);transform-origin:top left;border:none;pointer-events:none}
+.pc-iw{width:100%;height:100%;position:relative;background:var(--bg2);overflow:hidden}
+.pc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;border:none;pointer-events:none;display:block;}
+.pc-bg{position:absolute;inset:0;overflow:hidden;transition:transform .7s var(--ease)}
+.pc:hover .pc-bg{transform:scale(1.04)}
 .pc-tint{position:absolute;inset:0;background:rgba(8,8,13,.18);z-index:1;transition:background .5s}
 .pc:hover .pc-tint{background:rgba(8,8,13,.04)}
 .pc-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,13,.98) 0%,rgba(8,8,13,.45) 45%,transparent 80%);z-index:2}
@@ -867,7 +869,7 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
 
       <div class="pc" onclick="window.open('https://bistro-cafe-eight.vercel.app/','_blank')">
         <div class="pc-accent pc-a1"></div>
-        <div class="pc-bg"><div class="pc-iw"><iframe class="pc-if" src="https://bistro-cafe-eight.vercel.app/" loading="lazy" scrolling="no"></iframe><div class="pc-tint"></div></div></div>
+        <div class="pc-bg"><div class="pc-iw"><img class="pc-img" src="https://image.thum.io/get/width/800/crop/560/noanimate/https://bistro-cafe-eight.vercel.app/" alt="Project preview" loading="lazy" decoding="async"/><div class="pc-tint"></div></div></div>
         <div class="pc-ov"></div>
         <div class="pc-ct">
           <div class="pc-chip">⭐ Featured · Miami, USA</div>
@@ -880,7 +882,7 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
 
       <div class="pc" onclick="window.open('https://redoak-nu.vercel.app/','_blank')">
         <div class="pc-accent pc-a2"></div>
-        <div class="pc-bg"><div class="pc-iw"><iframe class="pc-if" src="https://redoak-nu.vercel.app/" loading="lazy" scrolling="no"></iframe><div class="pc-tint"></div></div></div>
+        <div class="pc-bg"><div class="pc-iw"><img class="pc-img" src="https://image.thum.io/get/width/800/crop/560/noanimate/https://redoak-nu.vercel.app/" alt="Project preview" loading="lazy" decoding="async"/><div class="pc-tint"></div></div></div>
         <div class="pc-ov"></div>
         <div class="pc-ct">
           <div class="pc-chip">Restaurant · Balaghat, India</div>
@@ -893,7 +895,7 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
 
       <div class="pc" onclick="window.open('https://thunder-cafe-7mr6.vercel.app/','_blank')">
         <div class="pc-accent pc-a3"></div>
-        <div class="pc-bg"><div class="pc-iw"><iframe class="pc-if" src="https://thunder-cafe-7mr6.vercel.app/" loading="lazy" scrolling="no"></iframe><div class="pc-tint"></div></div></div>
+        <div class="pc-bg"><div class="pc-iw"><img class="pc-img" src="https://image.thum.io/get/width/800/crop/560/noanimate/https://thunder-cafe-7mr6.vercel.app/" alt="Project preview" loading="lazy" decoding="async"/><div class="pc-tint"></div></div></div>
         <div class="pc-ov"></div>
         <div class="pc-ct">
           <div class="pc-chip">Café · Balaghat, India</div>
@@ -906,7 +908,7 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
 
       <div class="pc" onclick="window.open('https://whip-my-soul.vercel.app/','_blank')">
         <div class="pc-accent pc-a4"></div>
-        <div class="pc-bg"><div class="pc-iw"><iframe class="pc-if" src="https://whip-my-soul.vercel.app/" loading="lazy" scrolling="no"></iframe><div class="pc-tint"></div></div></div>
+        <div class="pc-bg"><div class="pc-iw"><img class="pc-img" src="https://image.thum.io/get/width/800/crop/560/noanimate/https://whip-my-soul.vercel.app/" alt="Project preview" loading="lazy" decoding="async"/><div class="pc-tint"></div></div></div>
         <div class="pc-ov"></div>
         <div class="pc-ct">
           <div class="pc-chip">Food Brand</div>
@@ -919,7 +921,7 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
 
       <div class="pc" onclick="window.open('https://chocolate-story.vercel.app/','_blank')">
         <div class="pc-accent pc-a5"></div>
-        <div class="pc-bg"><div class="pc-iw"><iframe class="pc-if" src="https://chocolate-story.vercel.app/" loading="lazy" scrolling="no"></iframe><div class="pc-tint"></div></div></div>
+        <div class="pc-bg"><div class="pc-iw"><img class="pc-img" src="https://image.thum.io/get/width/800/crop/560/noanimate/https://chocolate-story.vercel.app/" alt="Project preview" loading="lazy" decoding="async"/><div class="pc-tint"></div></div></div>
         <div class="pc-ov"></div>
         <div class="pc-ct">
           <div class="pc-chip">Dessert Brand</div>
