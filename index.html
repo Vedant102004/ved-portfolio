@@ -473,12 +473,8 @@ body.clk #cur-blob{width:14px;height:14px}
 .pc-a3{background:linear-gradient(to right,var(--r),var(--v))}
 .pc-a4{background:linear-gradient(to right,var(--o),var(--r))}
 .pc-a5{background:linear-gradient(to right,var(--g),var(--c))}
-.pc-bg{position:absolute;inset:0;overflow:hidden;transition:transform .7s var(--ease)}
-.pc:hover .pc-bg{transform:scale(1.04)}
 .pc-iw{width:100%;height:100%;position:relative;background:var(--bg2);overflow:hidden}
-.pc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;border:none;pointer-events:none;display:block;}
-.pc-bg{position:absolute;inset:0;overflow:hidden;transition:transform .7s var(--ease)}
-.pc:hover .pc-bg{transform:scale(1.04)}
+
 .pc-tint{position:absolute;inset:0;background:rgba(8,8,13,.18);z-index:1;transition:background .5s}
 .pc:hover .pc-tint{background:rgba(8,8,13,.04)}
 .pc-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,13,.98) 0%,rgba(8,8,13,.45) 45%,transparent 80%);z-index:2}
@@ -685,6 +681,45 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
   .tm-trust{flex-direction:column}
 }
 @media(max-width:600px){.pc{flex:0 0 270px;height:420px}}
+
+/* ── PROJECT CARD VISUAL BG ── */
+.pc-vis-wrap{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.pc-vis-letters{
+  position:absolute;
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-size:9rem;font-weight:800;line-height:1;
+  bottom:-1rem;right:-1rem;letter-spacing:-.05em;
+  transition:transform .7s var(--ease);
+  user-select:none;
+}
+.pc:hover .pc-vis-letters{transform:scale(1.05) translate(-4px,-4px)}
+.pc-vis-circle{
+  position:absolute;width:280px;height:280px;border-radius:50%;
+  top:-60px;right:-60px;
+  transition:transform .7s var(--ease);
+}
+.pc:hover .pc-vis-circle{transform:scale(1.2)}
+.pc-vis-lines{
+  position:absolute;bottom:35%;left:2rem;
+  display:flex;flex-direction:column;gap:8px;
+}
+.pc-vis-lines span{display:block;height:1px;border-radius:2px;transition:width .5s var(--ease)}
+.pc-vis-lines span:nth-child(1){width:60px}
+.pc-vis-lines span:nth-child(2){width:40px}
+.pc-vis-lines span:nth-child(3){width:25px}
+.pc:hover .pc-vis-lines span:nth-child(1){width:80px}
+.pc:hover .pc-vis-lines span:nth-child(2){width:55px}
+.pc:hover .pc-vis-lines span:nth-child(3){width:35px}
+.pc-vis-badge{
+  position:absolute;top:1.5rem;right:1.5rem;
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-size:1.1rem;font-weight:800;
+  width:48px;height:48px;border-radius:50%;
+  border:1.5px solid;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .3s var(--spring);
+}
+.pc:hover .pc-vis-badge{transform:scale(1.1) rotate(10deg)}
 </style>
 </head>
 <body>
@@ -869,7 +904,19 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
 
       <div class="pc" onclick="window.open('https://bistro-cafe-eight.vercel.app/','_blank')">
         <div class="pc-accent pc-a1"></div>
-        <div class="pc-bg"><div class="pc-iw"><img class="pc-img" src="https://image.thum.io/get/width/800/crop/560/noanimate/https://bistro-cafe-eight.vercel.app/" alt="Project preview" loading="lazy" decoding="async"/><div class="pc-tint"></div></div></div>
+        <div class="pc-bg" style="background:linear-gradient(135deg,#1a0a00 0%,#3d1a00 40%,#6b3a1f 70%,#c8860a 100%)">
+          <div class="pc-vis-wrap">
+            <div class="pc-vis-letters" style="color:#D4AF3720">BISTRO</div>
+            <div class="pc-vis-circle" style="background:radial-gradient(circle,#D4AF3722,transparent 70%)"></div>
+            <div class="pc-vis-lines">
+              <span style="background:#D4AF3730"></span>
+              <span style="background:#D4AF3720"></span>
+              <span style="background:#D4AF3715"></span>
+            </div>
+            <div class="pc-vis-badge" style="border-color:#D4AF3750;color:#D4AF37">BC</div>
+          </div>
+          <div class="pc-tint"></div>
+        </div>
         <div class="pc-ov"></div>
         <div class="pc-ct">
           <div class="pc-chip">⭐ Featured · Miami, USA</div>
@@ -882,7 +929,19 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
 
       <div class="pc" onclick="window.open('https://redoak-nu.vercel.app/','_blank')">
         <div class="pc-accent pc-a2"></div>
-        <div class="pc-bg"><div class="pc-iw"><img class="pc-img" src="https://image.thum.io/get/width/800/crop/560/noanimate/https://redoak-nu.vercel.app/" alt="Project preview" loading="lazy" decoding="async"/><div class="pc-tint"></div></div></div>
+        <div class="pc-bg" style="background:linear-gradient(135deg,#0a0500 0%,#1f0800 40%,#5c1a0a 70%,#a03020 100%)">
+          <div class="pc-vis-wrap">
+            <div class="pc-vis-letters" style="color:#C0392B20">REDOAK</div>
+            <div class="pc-vis-circle" style="background:radial-gradient(circle,#C0392B22,transparent 70%)"></div>
+            <div class="pc-vis-lines">
+              <span style="background:#C0392B30"></span>
+              <span style="background:#C0392B20"></span>
+              <span style="background:#C0392B15"></span>
+            </div>
+            <div class="pc-vis-badge" style="border-color:#C0392B50;color:#C0392B">RO</div>
+          </div>
+          <div class="pc-tint"></div>
+        </div>
         <div class="pc-ov"></div>
         <div class="pc-ct">
           <div class="pc-chip">Restaurant · Balaghat, India</div>
@@ -895,7 +954,19 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
 
       <div class="pc" onclick="window.open('https://thunder-cafe-7mr6.vercel.app/','_blank')">
         <div class="pc-accent pc-a3"></div>
-        <div class="pc-bg"><div class="pc-iw"><img class="pc-img" src="https://image.thum.io/get/width/800/crop/560/noanimate/https://thunder-cafe-7mr6.vercel.app/" alt="Project preview" loading="lazy" decoding="async"/><div class="pc-tint"></div></div></div>
+        <div class="pc-bg" style="background:linear-gradient(135deg,#050510 0%,#0a0a2a 40%,#1a1a5e 70%,#f0a500 100%)">
+          <div class="pc-vis-wrap">
+            <div class="pc-vis-letters" style="color:#F0A50020">THUNDER</div>
+            <div class="pc-vis-circle" style="background:radial-gradient(circle,#F0A50022,transparent 70%)"></div>
+            <div class="pc-vis-lines">
+              <span style="background:#F0A50030"></span>
+              <span style="background:#F0A50020"></span>
+              <span style="background:#F0A50015"></span>
+            </div>
+            <div class="pc-vis-badge" style="border-color:#F0A50050;color:#F0A500">TC</div>
+          </div>
+          <div class="pc-tint"></div>
+        </div>
         <div class="pc-ov"></div>
         <div class="pc-ct">
           <div class="pc-chip">Café · Balaghat, India</div>
@@ -908,7 +979,19 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
 
       <div class="pc" onclick="window.open('https://whip-my-soul.vercel.app/','_blank')">
         <div class="pc-accent pc-a4"></div>
-        <div class="pc-bg"><div class="pc-iw"><img class="pc-img" src="https://image.thum.io/get/width/800/crop/560/noanimate/https://whip-my-soul.vercel.app/" alt="Project preview" loading="lazy" decoding="async"/><div class="pc-tint"></div></div></div>
+        <div class="pc-bg" style="background:linear-gradient(135deg,#050010 0%,#150030 40%,#3d0060 70%,#c020a0 100%)">
+          <div class="pc-vis-wrap">
+            <div class="pc-vis-letters" style="color:#C020A020">WHIP</div>
+            <div class="pc-vis-circle" style="background:radial-gradient(circle,#C020A022,transparent 70%)"></div>
+            <div class="pc-vis-lines">
+              <span style="background:#C020A030"></span>
+              <span style="background:#C020A020"></span>
+              <span style="background:#C020A015"></span>
+            </div>
+            <div class="pc-vis-badge" style="border-color:#C020A050;color:#C020A0">WS</div>
+          </div>
+          <div class="pc-tint"></div>
+        </div>
         <div class="pc-ov"></div>
         <div class="pc-ct">
           <div class="pc-chip">Food Brand</div>
@@ -921,7 +1004,19 @@ footer{padding:2rem 5rem;border-top:1px solid var(--bd);background:var(--bg)}
 
       <div class="pc" onclick="window.open('https://chocolate-story.vercel.app/','_blank')">
         <div class="pc-accent pc-a5"></div>
-        <div class="pc-bg"><div class="pc-iw"><img class="pc-img" src="https://image.thum.io/get/width/800/crop/560/noanimate/https://chocolate-story.vercel.app/" alt="Project preview" loading="lazy" decoding="async"/><div class="pc-tint"></div></div></div>
+        <div class="pc-bg" style="background:linear-gradient(135deg,#0a0500 0%,#1a0a00 40%,#3d1500 70%,#7b3a10 100%)">
+          <div class="pc-vis-wrap">
+            <div class="pc-vis-letters" style="color:#8B451320">CHOCO</div>
+            <div class="pc-vis-circle" style="background:radial-gradient(circle,#8B451322,transparent 70%)"></div>
+            <div class="pc-vis-lines">
+              <span style="background:#8B451330"></span>
+              <span style="background:#8B451320"></span>
+              <span style="background:#8B451315"></span>
+            </div>
+            <div class="pc-vis-badge" style="border-color:#8B451350;color:#8B4513">CS</div>
+          </div>
+          <div class="pc-tint"></div>
+        </div>
         <div class="pc-ov"></div>
         <div class="pc-ct">
           <div class="pc-chip">Dessert Brand</div>
