@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vedant Bahe — Web Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200;12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:     #060609;
+  --bg1:    #0a0a12;
+  --bg2:    #0f0f1a;
+  --glass:  rgba(255,255,255,.04);
+  --glass2: rgba(255,255,255,.07);
+  --border: rgba(255,255,255,.08);
+  --border2:rgba(255,255,255,.14);
+  --txt:    #e8eaf0;
+  --txt2:   #6b7280;
+  --txt3:   #9ca3af;
+  --p:      #a78bfa;   /* violet */
+  --p2:     #7c3aed;
+  --b:      #38bdf8;   /* sky blue */
+  --b2:     #0ea5e9;
+  --g:      #34d399;   /* emerald */
+  --pk:     #f472b6;   /* pink */
+  --gold:   #fbbf24;
+  --e:      cubic-bezier(.4,0,.2,1);
+  --spring: cubic-bezier(.34,1.56,.64,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
+html { scroll-behavior: auto }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--txt);
+  overflow-x: hidden;
+  cursor: none;
+}
+a { text-decoration: none; color: inherit }
+
+/* ─── NOISE GRAIN ─── */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9998; opacity: .5;
+}
+
+/* ─── MAGNETIC BLOB CURSOR ─── */
+#blob {
+  position: fixed; top: 0; left: 0;
+  width: 28px; height: 28px;
+  background: radial-gradient(circle, rgba(167,139,250,.9), rgba(56,189,248,.6));
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%,-50%);
+  transition: width .4s var(--spring), height .4s var(--spring), opacity .3s;
+  filter: blur(1px);
+  mix-blend-mode: screen;
+}
+#blob2 {
+  position: fixed; top: 0; left: 0;
+  width: 6px; height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%,-50%);
+  transition: width .2s, height .2s;
+}
+body.hov #blob { width: 60px; height: 60px; opacity: .7 }
+body.hov #blob2 { width: 4px; height: 4px; opacity: .5 }
+body.clk #blob { width: 16px; height: 16px }
+
+/* ─── PRELOADER ─── */
+#loader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 2rem;
+}
+.ld-wordmark {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 800;
+  background: linear-gradient(135deg, var(--p), var(--b), var(--pk));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity .7s var(--e), transform .7s var(--e);
+}
+.ld-wordmark.show { opacity: 1; transform: translateY(0) }
+.ld-track { width: 200px; height: 1px; background: var(--border); position: relative; overflow: hidden }
+.ld-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: linear-gradient(to right, var(--p), var(--b)); transition: width .04s linear }
+.ld-pct { font-family: 'DM Sans', sans-serif; font-size: .75rem; color: var(--txt2); letter-spacing: .12em }
+#ld-out { position: absolute; inset: 0; background: var(--bg); transform: scaleY(0); transform-origin: top; z-index: 2 }
+
+/* ─── SMOOTH SCROLL WRAPPER ─── */
+#smooth-wrapper { overflow: hidden; position: fixed; inset: 0; }
+#smooth-content { will-change: transform }
+
+/* ─── AURORA BACKGROUND ─── */
+.aurora {
+  position: absolute; border-radius: 50%;
+  filter: blur(120px); pointer-events: none; opacity: 0.55;
+  animation: aurafloat 12s ease-in-out infinite;
+}
+.a1 { width: 700px; height: 700px; background: radial-gradient(circle, rgba(124,58,237,.35), transparent 70%); top: -20%; left: -10%; animation-delay: 0s }
+.a2 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(56,189,248,.25), transparent 70%); top: 10%; right: -5%; animation-delay: -4s }
+.a3 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(244,114,182,.2), transparent 70%); bottom: -10%; left: 20%; animation-delay: -8s }
+@keyframes aurafloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-40px) scale(1.05)} }
+
+/* ─── NAVBAR ─── */
+#nav {
+  position: fixed; top: 1.2rem; left: 50%; transform: translateX(-50%);
+  z-index: 500;
+  display: flex; align-items: center; gap: 0;
+  background: rgba(10,10,18,.7);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: .5rem .5rem .5rem 1.5rem;
+  backdrop-filter: blur(20px);
+  opacity: 0; transition: opacity .5s;
+  white-space: nowrap;
+}
+#nav.v { opacity: 1 }
+.n-logo {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: .85rem; font-weight: 700; color: var(--txt);
+  margin-right: 2.5rem;
+}
+.n-logo em { color: var(--p); font-style: normal }
+.n-links { display: flex; gap: .2rem; list-style: none }
+.n-links a {
+  font-size: .72rem; font-weight: 500; color: var(--txt2);
+  padding: .45rem 1rem; border-radius: 100px;
+  transition: color .25s, background .25s;
+}
+.n-links a:hover { color: var(--txt); background: var(--glass2) }
+.n-cta {
+  margin-left: .5rem;
+  padding: .55rem 1.4rem !important;
+  background: var(--p2) !important;
+  color: #fff !important; border-radius: 100px !important;
+  font-size: .72rem !important; font-weight: 600 !important;
+  transition: opacity .2s !important;
+}
+.n-cta:hover { opacity: .85 !important }
+.n-hbg { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: none; padding: 6px; margin-left: 1rem }
+.n-hbg span { display: block; width: 18px; height: 1.5px; background: var(--txt); border-radius: 2px; transition: transform .3s, opacity .3s }
+
+/* ─── HERO ─── */
+#hero {
+  min-height: 100vh; position: relative; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 7rem 5rem 5rem;
+}
+.h-grid-overlay {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 100px 100px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 20%, transparent 80%);
+  opacity: .3;
+}
+.h-center { max-width: 1100px; margin: 0 auto; width: 100%; position: relative; z-index: 2 }
+.h-badge {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .35rem 1rem; border-radius: 100px;
+  border: 1px solid rgba(167,139,250,.3);
+  background: rgba(167,139,250,.08);
+  font-size: .7rem; font-weight: 500; color: var(--p);
+  margin-bottom: 2.5rem;
+  opacity: 0; transform: translateY(14px);
+}
+.h-badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--g); box-shadow: 0 0 8px var(--g); animation: pulse 2s infinite }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.4)} 50%{box-shadow:0 0 0 6px rgba(52,211,153,0)} }
+.h-h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(3.5rem, 8vw, 9rem); font-weight: 800;
+  line-height: .95; letter-spacing: -.04em;
+  margin-bottom: 2.5rem;
+}
+.h-word { display: inline-block; overflow: hidden; vertical-align: top; margin-right: .08em }
+.h-word span { display: block; transform: translateY(110%) }
+.h-grad { background: linear-gradient(135deg, var(--p) 0%, var(--b) 50%, var(--pk) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text }
+.h-muted { color: rgba(255,255,255,.18) }
+.h-row { display: flex; align-items: flex-end; gap: 4rem; flex-wrap: wrap }
+.h-desc {
+  font-size: 1rem; color: var(--txt2); line-height: 1.85; max-width: 400px;
+  overflow: hidden;
+}
+.h-desc span { display: block; transform: translateY(100%) }
+.h-right { display: flex; flex-direction: column; gap: 2rem; margin-left: auto }
+.h-btns { display: flex; gap: .8rem; opacity: 0; transform: translateY(16px) }
+.btn-primary {
+  padding: .85rem 2rem; border-radius: 100px;
+  background: linear-gradient(135deg, var(--p2), var(--b2));
+  color: #fff; font-size: .82rem; font-weight: 600;
+  border: none; cursor: none;
+  box-shadow: 0 0 30px rgba(124,58,237,.3), 0 0 60px rgba(56,189,248,.15);
+  transition: transform .25s var(--spring), box-shadow .3s, opacity .2s;
+  position: relative; overflow: hidden;
+}
+.btn-primary::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,.1), transparent); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(124,58,237,.45), 0 0 80px rgba(56,189,248,.2) }
+.btn-outline {
+  padding: .85rem 2rem; border-radius: 100px;
+  background: var(--glass); color: var(--txt3);
+  border: 1px solid var(--border2); font-size: .82rem; font-weight: 500;
+  cursor: none; transition: background .25s, color .25s, border-color .25s;
+}
+.btn-outline:hover { background: var(--glass2); color: var(--txt); border-color: var(--border2) }
+.h-stats { display: flex; gap: 0; opacity: 0; transform: translateY(16px) }
+.hst {
+  padding: 1rem 1.8rem; border: 1px solid var(--border); border-right: none;
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+}
+.hst:last-child { border-right: 1px solid var(--border) }
+.hst-n { font-family: 'Bricolage Grotesque', sans-serif; font-size: 2.2rem; font-weight: 800; color: var(--txt); line-height: 1 }
+.hst-l { font-size: .62rem; color: var(--txt2); font-weight: 500; margin-top: .2rem }
+.h-scroll {
+  position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: .6rem;
+  opacity: 0;
+}
+.h-scroll-mouse { width: 20px; height: 30px; border: 1.5px solid rgba(255,255,255,.2); border-radius: 10px; position: relative }
+.h-scroll-mouse::after { content: ''; position: absolute; top: 5px; left: 50%; transform: translateX(-50%); width: 3px; height: 6px; border-radius: 2px; background: rgba(255,255,255,.4); animation: scrl 1.8s ease-in-out infinite }
+@keyframes scrl { 0%{opacity:1;transform:translateX(-50%) translateY(0)} 100%{opacity:0;transform:translateX(-50%) translateY(10px)} }
+.h-scroll span { font-size: .6rem; color: var(--txt2); letter-spacing: .15em }
+
+/* ─── MARQUEE ─── */
+.mq-wrap { overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: .75rem 0; position: relative }
+.mq-wrap::before,.mq-wrap::after { content: ''; position: absolute; top: 0; bottom: 0; width: 150px; z-index: 2; pointer-events: none }
+.mq-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent) }
+.mq-wrap::after { right: 0; background: linear-gradient(to left, var(--bg), transparent) }
+.mq-t { display: flex; width: max-content; animation: mqs 22s linear infinite }
+.mq-t:hover { animation-play-state: paused }
+.mq-t.r { animation-direction: reverse; animation-duration: 28s }
+.mq-item { display: flex; align-items: center; gap: 1.8rem; padding: 0 2rem; font-size: .68rem; font-weight: 500; color: var(--txt2); white-space: nowrap }
+.mq-item b { color: var(--p); font-weight: 600 }
+.mq-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--border2); flex-shrink: 0 }
+@keyframes mqs { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ─── SECTION COMMONS ─── */
+.s-eyebrow { display: flex; align-items: center; gap: .6rem; font-size: .7rem; font-weight: 600; color: var(--p); letter-spacing: .06em; margin-bottom: 1.2rem }
+.s-eyebrow::before { content: ''; width: 16px; height: 1.5px; background: var(--p); border-radius: 2px }
+.s-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: clamp(2.2rem, 4vw, 3.8rem); font-weight: 800; line-height: 1.05; letter-spacing: -.03em; color: var(--txt) }
+.s-title em { font-style: italic; color: var(--p); background: none; -webkit-text-fill-color: var(--p) }
+.s-title .gr { background: linear-gradient(135deg, var(--p), var(--b)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-style: normal }
+.tl { overflow: hidden; display: block }
+.tl span { display: block; transform: translateY(100%); transition: transform .9s var(--e) }
+.tl.v span { transform: translateY(0) }
+.rev { opacity: 0; transform: translateY(28px); transition: opacity .8s var(--e), transform .8s var(--e) }
+.rev.v { opacity: 1; transform: translateY(0) }
+
+/* ─── GLASS CARD ─── */
+.g-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+  position: relative; overflow: hidden;
+  transition: border-color .3s, background .3s, transform .3s;
+}
+.g-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(600px circle at var(--mx,50%) var(--my,50%), rgba(167,139,250,.07), transparent 60%);
+  opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 0;
+}
+.g-card:hover { border-color: var(--border2); background: var(--glass2) }
+.g-card:hover::before { opacity: 1 }
+/* Shimmer border */
+.g-card.shimmer::after {
+  content: ''; position: absolute; inset: -1px; border-radius: 20px; z-index: -1;
+  background: linear-gradient(135deg, var(--p), var(--b), var(--pk), var(--p));
+  background-size: 300% 300%;
+  animation: shimmer-border 4s linear infinite;
+  opacity: 0; transition: opacity .4s;
+}
+.g-card.shimmer:hover::after { opacity: .6 }
+@keyframes shimmer-border { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+/* ─── ABOUT / BENTO ─── */
+#about { padding: 8rem 5rem; position: relative; overflow: hidden }
+.ab-max { max-width: 1100px; margin: 0 auto }
+.bento { display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: 80px; gap: 14px; margin-top: 4rem }
+
+/* Bento cells */
+.b-intro { grid-column: span 7; grid-row: span 5; padding: 2.5rem }
+.b-badge { grid-column: span 5; grid-row: span 3; display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem }
+.b-stat1 { grid-column: span 2; grid-row: span 2; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center }
+.b-stat2 { grid-column: span 2; grid-row: span 2 }
+.b-stat3 { grid-column: span 1; grid-row: span 2 }
+.b-skills { grid-column: span 5; grid-row: span 4; padding: 2rem }
+.b-avail { grid-column: span 3; grid-row: span 2; display: flex; align-items: center; justify-content: center; gap: .6rem; padding: 1.5rem }
+.b-location { grid-column: span 4; grid-row: span 2; padding: 1.5rem 2rem; display: flex; flex-direction: column; justify-content: center }
+.b-quote { grid-column: span 12; grid-row: span 3; display: flex; align-items: center; justify-content: center; padding: 2rem; text-align: center }
+
+.b-init { font-family: 'Bricolage Grotesque', sans-serif; font-size: 3rem; font-weight: 800; color: var(--txt); margin-bottom: .2rem }
+.b-init em { background: linear-gradient(135deg, var(--p), var(--b)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-style: normal }
+.b-role { font-size: .72rem; font-weight: 500; color: var(--txt2); margin-bottom: 1.2rem }
+.b-bio { font-size: .9rem; color: var(--txt2); line-height: 1.85 }
+.b-stat-n { font-family: 'Bricolage Grotesque', sans-serif; font-size: 2.4rem; font-weight: 800; line-height: 1; background: linear-gradient(135deg, var(--p), var(--b)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text }
+.b-stat-l { font-size: .6rem; color: var(--txt2); font-weight: 500; margin-top: .2rem }
+.b-stat2,.b-stat3 { padding: 1.5rem; display: flex; flex-direction: column; justify-content: center }
+.b-avail-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--g); box-shadow: 0 0 10px var(--g), 0 0 20px rgba(52,211,153,.4); flex-shrink: 0 }
+.b-avail span { font-size: .72rem; font-weight: 600; color: var(--g) }
+.b-loc-city { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--txt) }
+.b-loc-sub { font-size: .65rem; color: var(--txt2); margin-top: .2rem }
+.b-skills-title { font-size: .65rem; font-weight: 600; color: var(--txt2); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 1rem }
+.b-skills-list { display: flex; flex-wrap: wrap; gap: .4rem }
+.bsk { padding: .4rem .9rem; border-radius: 100px; border: 1px solid var(--border); background: var(--glass); font-size: .68rem; font-weight: 500; color: var(--txt2); transition: all .25s }
+.bsk:hover { border-color: rgba(167,139,250,.4); color: var(--p); background: rgba(167,139,250,.08) }
+.b-quote-text { font-family: 'Instrument Serif', serif; font-size: clamp(1.2rem, 2.5vw, 2rem); font-style: italic; color: var(--txt); line-height: 1.55 }
+.b-quote-text em { color: var(--p) }
+
+/* gradient badges for b-badge */
+.b-badge-inner { position: relative; z-index: 1 }
+.b-badge::before { content: ''; position: absolute; inset: 0; border-radius: 20px; background: linear-gradient(135deg, rgba(124,58,237,.15), rgba(56,189,248,.1)); pointer-events: none }
+.b-badge-num { font-family: 'Bricolage Grotesque', sans-serif; font-size: 5rem; font-weight: 800; line-height: 1; background: linear-gradient(135deg, var(--p), var(--b)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text }
+.b-badge-lbl { font-size: .7rem; color: var(--txt2); font-weight: 500 }
+
+/* ─── WORK SECTION ─── */
+#work-section { position: relative }
+#work-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; background: var(--bg1) }
+.wk-head { position: absolute; top: 4rem; left: 5rem; right: 5rem; z-index: 10; display: flex; align-items: flex-end; justify-content: space-between }
+.wk-ctr { font-family: 'Bricolage Grotesque', sans-serif; font-size: .85rem; font-weight: 700; color: var(--txt2) }
+.wk-ctr em { color: var(--p); font-style: normal; font-size: 1.1rem }
+#work-track { display: flex; align-items: center; height: 100%; padding: 0 5rem; gap: 2rem; will-change: transform }
+
+/* ── PROJECT CARD 2025 ── */
+.pc {
+  flex: 0 0 400px; height: 560px;
+  border-radius: 20px; overflow: hidden;
+  position: relative; cursor: none;
+  border: 1px solid var(--border);
+  transition: border-color .4s, box-shadow .4s, transform .4s var(--spring);
+  background: var(--bg2);
+}
+.pc:hover { border-color: rgba(167,139,250,.3); box-shadow: 0 30px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(167,139,250,.1); transform: translateY(-6px) }
+/* tilt effect via JS */
+.pc-bg { position: absolute; inset: 0; overflow: hidden; transition: transform .6s var(--e) }
+.pc:hover .pc-bg { transform: scale(1.04) }
+.pc-iframe-wrap { width: 100%; height: 100%; background: var(--bg); position: relative }
+.pc-iframe { position: absolute; top: 0; left: 0; width: 1440px; height: 900px; transform: scale(0.278); transform-origin: top left; border: none; pointer-events: none }
+.pc-tint { position: absolute; inset: 0; background: rgba(6,6,9,.2); z-index: 1; transition: background .5s }
+.pc:hover .pc-tint { background: rgba(6,6,9,.05) }
+.pc-ov { position: absolute; inset: 0; background: linear-gradient(to top, rgba(6,6,9,.98) 0%, rgba(6,6,9,.5) 40%, transparent 80%); z-index: 2 }
+/* Gradient top accent */
+.pc-accent { position: absolute; top: 0; left: 0; right: 0; height: 2px; z-index: 4; opacity: 0; transition: opacity .4s }
+.pc:hover .pc-accent { opacity: 1 }
+.pc-accent1 { background: linear-gradient(to right, var(--p), var(--b)) }
+.pc-accent2 { background: linear-gradient(to right, var(--b), var(--g)) }
+.pc-accent3 { background: linear-gradient(to right, var(--pk), var(--p)) }
+.pc-accent4 { background: linear-gradient(to right, var(--gold), var(--pk)) }
+.pc-accent5 { background: linear-gradient(to right, var(--g), var(--b)) }
+/* Content */
+.pc-ct { position: absolute; bottom: 0; left: 0; right: 0; padding: 2rem; z-index: 4; transform: translateY(45px); transition: transform .5s var(--e) }
+.pc:hover .pc-ct { transform: translateY(0) }
+.pc-chip { display: inline-flex; align-items: center; gap: .4rem; padding: .28rem .75rem; border-radius: 100px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.06); font-size: .6rem; font-weight: 600; color: var(--txt3); margin-bottom: .8rem }
+.pc-ttl { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.6rem; font-weight: 700; color: #fff; line-height: 1.15; margin-bottom: .6rem; letter-spacing: -.02em }
+.pc-tags { display: flex; gap: .35rem; flex-wrap: wrap; margin-bottom: .8rem; opacity: 0; transition: opacity .4s .1s }
+.pc:hover .pc-tags { opacity: 1 }
+.pc-tag { font-size: .58rem; font-weight: 600; padding: .2rem .6rem; border-radius: 100px; border: 1px solid rgba(167,139,250,.25); color: rgba(167,139,250,.7) }
+.pc-desc { font-size: .75rem; color: rgba(255,255,255,.45); line-height: 1.7; margin-bottom: 1rem; opacity: 0; transition: opacity .4s .15s; transform: translateY(8px) }
+.pc:hover .pc-desc { opacity: 1; transform: translateY(0) }
+.pc-cta {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-size: .68rem; font-weight: 600; color: var(--p);
+  padding: .5rem 1.1rem; border-radius: 100px;
+  border: 1px solid rgba(167,139,250,.3); background: rgba(167,139,250,.08);
+  transition: background .25s, border-color .25s;
+}
+.pc-cta:hover { background: rgba(167,139,250,.15); border-color: rgba(167,139,250,.5) }
+.wk-hint { position: absolute; bottom: 3rem; right: 5rem; display: flex; align-items: center; gap: .7rem; font-size: .65rem; color: var(--txt2); font-weight: 500 }
+.wk-hint-icon { display: flex; gap: 2px }
+.wk-hint-icon span { width: 2px; height: 14px; background: var(--txt2); border-radius: 2px; opacity: .4 }
+.wk-hint-icon span:nth-child(2) { height: 20px; opacity: .7 }
+.wk-hint-icon span:nth-child(3) { height: 14px; opacity: .4 }
+
+/* ─── SERVICES ─── */
+#services { padding: 8rem 5rem; position: relative; overflow: hidden }
+.sv-max { max-width: 1100px; margin: 0 auto }
+.sv-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 4rem; flex-wrap: wrap; gap: 2rem }
+.sv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px }
+.sv-card {
+  padding: 2.5rem; border-radius: 20px; position: relative; overflow: hidden;
+  background: var(--glass); border: 1px solid var(--border);
+  transition: transform .3s var(--spring), border-color .3s, box-shadow .3s;
+}
+.sv-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(600px circle at var(--mx,50%) var(--my,50%), rgba(167,139,250,.06), transparent 50%); opacity: 0; transition: opacity .3s }
+.sv-card:hover { transform: translateY(-4px); border-color: var(--border2); box-shadow: 0 20px 60px rgba(0,0,0,.3) }
+.sv-card:hover::before { opacity: 1 }
+.sv-glow { position: absolute; top: -40px; right: -40px; width: 150px; height: 150px; border-radius: 50%; filter: blur(50px); opacity: .3; pointer-events: none }
+.sv-g1 { background: var(--p) }
+.sv-g2 { background: var(--b) }
+.sv-g3 { background: var(--pk) }
+.sv-ico { font-size: 2rem; margin-bottom: 1.5rem; display: block; position: relative; z-index: 1 }
+.sv-ttl { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--txt); margin-bottom: .7rem; position: relative; z-index: 1 }
+.sv-desc { font-size: .82rem; color: var(--txt2); line-height: 1.85; margin-bottom: 1.5rem; position: relative; z-index: 1 }
+.sv-price { display: inline-flex; align-items: center; gap: .4rem; font-size: .7rem; font-weight: 700; color: var(--p); padding: .4rem .9rem; border-radius: 100px; border: 1px solid rgba(167,139,250,.25); background: rgba(167,139,250,.08); position: relative; z-index: 1 }
+.sv-pop-badge { position: absolute; top: 1.2rem; right: 1.2rem; z-index: 2; font-size: .58rem; font-weight: 700; padding: .3rem .7rem; border-radius: 100px; background: linear-gradient(135deg, var(--p2), var(--b2)); color: #fff }
+.sv-divider { width: 30px; height: 2px; border-radius: 2px; background: linear-gradient(to right, var(--p), var(--b)); margin-bottom: 1.5rem; position: relative; z-index: 1 }
+
+/* ─── CONTACT ─── */
+#contact { padding: 8rem 5rem; position: relative; overflow: hidden }
+.ct-max { max-width: 1100px; margin: 0 auto }
+.ct-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; margin-top: 4rem }
+.ct-left {}
+.ct-sub { font-size: .92rem; color: var(--txt2); line-height: 1.9; margin-bottom: 2.5rem }
+.ct-links { display: flex; flex-direction: column; gap: .75rem }
+.ctm {
+  display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.3rem;
+  border-radius: 14px; background: var(--glass); border: 1px solid var(--border);
+  transition: border-color .25s, background .25s, transform .25s; cursor: none;
+}
+.ctm:hover { border-color: var(--border2); background: var(--glass2); transform: translateX(5px) }
+.ctm-ico { width: 38px; height: 38px; border-radius: 10px; background: rgba(167,139,250,.1); border: 1px solid rgba(167,139,250,.2); display: flex; align-items: center; justify-content: center; font-size: .9rem; flex-shrink: 0 }
+.ctm-lbl { font-size: .6rem; font-weight: 600; color: var(--p); letter-spacing: .06em; text-transform: uppercase; margin-bottom: .12rem }
+.ctm-val { font-size: .88rem; color: var(--txt) }
+.ct-right {}
+.ct-card {
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: 24px; padding: 3rem; overflow: hidden; position: relative;
+}
+.ct-card::before { content: ''; position: absolute; inset: -1px; border-radius: 24px; background: linear-gradient(135deg, rgba(167,139,250,.25), rgba(56,189,248,.15), rgba(244,114,182,.15)); z-index: -1 }
+.ct-card-glow { position: absolute; top: -60px; right: -60px; width: 250px; height: 250px; border-radius: 50%; background: radial-gradient(circle, rgba(124,58,237,.2), transparent 60%); pointer-events: none }
+.ct-avail { display: inline-flex; align-items: center; gap: .5rem; padding: .35rem .9rem; border-radius: 100px; border: 1px solid rgba(52,211,153,.25); background: rgba(52,211,153,.06); font-size: .65rem; font-weight: 600; color: var(--g); margin-bottom: 1.5rem; position: relative; z-index: 1 }
+.ct-avail-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--g); box-shadow: 0 0 8px var(--g); animation: pulse 2s infinite }
+.ct-quote { font-family: 'Instrument Serif', serif; font-size: 1.6rem; font-style: italic; color: var(--txt); line-height: 1.5; margin-bottom: .8rem; position: relative; z-index: 1 }
+.ct-quote em { color: var(--p) }
+.ct-body { font-size: .82rem; color: var(--txt2); line-height: 1.85; margin-bottom: 2rem; position: relative; z-index: 1 }
+.ct-cta {
+  width: 100%; padding: 1rem 2rem; border-radius: 100px;
+  background: linear-gradient(135deg, var(--p2), var(--b2));
+  color: #fff; font-size: .8rem; font-weight: 600; border: none; cursor: none;
+  display: flex; align-items: center; justify-content: center; gap: .5rem;
+  box-shadow: 0 0 30px rgba(124,58,237,.3);
+  transition: opacity .2s, transform .2s var(--spring), box-shadow .3s;
+  position: relative; z-index: 1;
+}
+.ct-cta:hover { opacity: .9; transform: translateY(-2px); box-shadow: 0 0 50px rgba(124,58,237,.45) }
+
+/* ─── FOOTER ─── */
+footer { padding: 2rem 5rem; border-top: 1px solid var(--border) }
+.ft { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem }
+.ft-logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: .9rem; font-weight: 700; color: var(--txt2) }
+.ft-logo em { color: var(--p); font-style: normal }
+.ft-copy { font-size: .7rem; color: var(--txt2) }
+.ft-lnks { display: flex; gap: 2rem }
+.ft-lnks a { font-size: .7rem; color: var(--txt2); transition: color .25s }
+.ft-lnks a:hover { color: var(--p) }
+
+/* ─── MOB NAV ─── */
+.mob-nav { position: fixed; top: 0; right: -100%; width: 72%; max-width: 280px; height: 100vh; background: var(--bg1); border-left: 1px solid var(--border); z-index: 999; padding: 5rem 2rem; transition: right .5s var(--e); display: none; flex-direction: column }
+.mob-nav.on { right: 0 }
+.mob-nav a { font-family: 'Bricolage Grotesque', sans-serif; font-size: .9rem; font-weight: 600; color: var(--txt2); padding: 1rem 0; border-bottom: 1px solid var(--border); display: block; transition: color .25s }
+.mob-nav a:hover { color: var(--p) }
+.mob-ov { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 998; opacity: 0; pointer-events: none; transition: opacity .4s; display: none }
+.mob-ov.on { opacity: 1; pointer-events: all }
+@media(max-width:900px) { .mob-nav{display:flex} .mob-ov{display:block} }
+
+/* STT */
+#stt { position: fixed; bottom: 2rem; right: 2rem; width: 44px; height: 44px; background: var(--glass); border: 1px solid var(--border); border-radius: 100px; color: var(--txt2); display: flex; align-items: center; justify-content: center; cursor: none; z-index: 800; opacity: 0; transform: translateY(10px); transition: opacity .3s, transform .3s, background .25s; font-size: .75rem; backdrop-filter: blur(10px) }
+#stt.on { opacity: 1; transform: translateY(0) }
+#stt:hover { background: var(--glass2); color: var(--p) }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1100px) { .bento { grid-template-columns: repeat(6,1fr) } .b-intro{grid-column:span 6;grid-row:span 4} .b-badge{grid-column:span 3;grid-row:span 3} .b-stat1,.b-stat2,.b-stat3{grid-column:span 1} .b-skills{grid-column:span 3;grid-row:span 4} .b-avail{grid-column:span 3} .b-location{grid-column:span 3} .b-quote{grid-column:span 6} }
+@media(max-width:900px) {
+  section,#about,#services,#contact { padding: 5rem 1.5rem }
+  #hero { padding: 7rem 1.5rem 5rem }
+  #nav { top:.8rem; padding:.45rem .45rem .45rem 1.2rem; max-width:calc(100vw - 2rem) }
+  .n-links { display: none } .n-hbg { display: flex }
+  .h-h1 { font-size: clamp(2.8rem,12vw,5rem) }
+  .h-row { flex-direction: column; gap: 2rem } .h-right { margin-left: 0 }
+  .h-stats { display: none }
+  .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: auto; gap: 10px }
+  .b-intro,.b-badge,.b-stat1,.b-stat2,.b-stat3,.b-skills,.b-avail,.b-location,.b-quote { grid-column: span 2; grid-row: auto; min-height: unset }
+  .sv-grid { grid-template-columns: 1fr }
+  .ct-grid { grid-template-columns: 1fr; gap: 3rem }
+  #work-track { padding: 0 1.5rem; gap: 1.5rem }
+  .pc { flex:0 0 300px; height:460px }
+  .wk-head { left:1.5rem; right:1.5rem }
+  .wk-hint { right:1.5rem }
+  body { cursor: auto } #blob,#blob2 { display: none }
+  footer, .ft { padding: 1.5rem; flex-direction: column; align-items: flex-start }
+}
+@media(max-width:600px) { .pc { flex:0 0 270px; height:420px } .h-btns { flex-direction: column } }
+</style>
+</head>
+<body>
+
+<!-- BLOB CURSOR -->
+<div id="blob"></div>
+<div id="blob2"></div>
+
+<!-- PRELOADER -->
+<div id="loader">
+  <div class="ld-wordmark" id="ldwm">VB</div>
+  <div class="ld-track"><div class="ld-fill" id="ldFill"></div></div>
+  <div class="ld-pct" id="ldPct">0%</div>
+  <div id="ld-out"></div>
+</div>
+
+<!-- MOB NAV -->
+<div class="mob-ov" id="mobOv" onclick="closeNav()"></div>
+<nav class="mob-nav" id="mobNav">
+  <button onclick="closeNav()" style="position:absolute;top:1.5rem;right:1.5rem;background:none;border:none;color:var(--txt2);font-size:1.4rem;cursor:none;font-family:'Bricolage Grotesque',sans-serif">✕</button>
+  <a href="#about" onclick="closeNav()">About</a>
+  <a href="#work-section" onclick="closeNav()">Work</a>
+  <a href="#services" onclick="closeNav()">Services</a>
+  <a href="#contact" onclick="closeNav()" style="color:var(--p)">Hire Me</a>
+</nav>
+
+<!-- PILL NAV -->
+<nav id="nav">
+  <div class="n-logo">Vedant <em>Bahe</em></div>
+  <ul class="n-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#work-section">Work</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#contact" class="n-cta">Hire Me</a></li>
+  </ul>
+  <button class="n-hbg" id="hbg" onclick="toggleNav()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="aurora a1"></div><div class="aurora a2"></div><div class="aurora a3"></div>
+  <div class="h-grid-overlay"></div>
+  <div class="h-center">
+    <div class="h-badge" id="hBadge">
+      <div class="h-badge-dot"></div>
+      Available for new projects · India → Worldwide
+    </div>
+    <h1 class="h-h1">
+      <span class="h-word"><span>I</span></span>
+      <span class="h-word"><span>build</span></span>
+      <span class="h-word h-grad"><span>websites</span></span>
+      <br>
+      <span class="h-word h-muted"><span>that</span></span>
+      <span class="h-word h-muted"><span>make</span></span>
+      <br>
+      <span class="h-word"><span>people</span></span>
+      <span class="h-word" style="color:var(--pk)"><span>stop.</span></span>
+    </h1>
+    <div class="h-row">
+      <div class="h-desc"><span id="hDesc">Premium restaurant & hospitality websites — cinematic animations, zero templates, obsessive detail. Built to convert visitors into loyal customers.</span></div>
+      <div class="h-right">
+        <div class="h-btns" id="hBtns">
+          <a href="#work-section" class="btn-primary">See My Work →</a>
+          <a href="#contact" class="btn-outline">Let's Talk</a>
+        </div>
+        <div class="h-stats" id="hStats">
+          <div class="hst"><div class="hst-n" id="hCnt">5</div><div class="hst-l">Live Projects</div></div>
+          <div class="hst"><div class="hst-n">$0</div><div class="hst-l">Templates Used</div></div>
+          <div class="hst"><div class="hst-n">24h</div><div class="hst-l">Response Time</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="h-scroll" id="hScroll"><div class="h-scroll-mouse"></div><span>Scroll to explore</span></div>
+</section>
+
+<!-- MARQUEE x2 -->
+<div class="mq-wrap" id="mq1w"></div>
+<div class="mq-wrap" style="background:var(--bg1)" id="mq2w"></div>
+
+<!-- ABOUT — BENTO GRID -->
+<section id="about">
+  <div class="ab-max">
+    <div class="s-eyebrow rev">About Me</div>
+    <h2 class="s-title">
+      <span class="tl"><span>The designer behind</span></span>
+      <span class="tl"><span>extraordinary <em>restaurants</em> online.</span></span>
+    </h2>
+    <div class="bento">
+
+      <div class="g-card b-intro shimmer rev">
+        <div class="b-init">Vedant <em>Bahe.</em></div>
+        <div class="b-role">Web Designer · Est. 2024</div>
+        <p class="b-bio">Self-taught designer from India building cinematic, 100% custom websites for restaurants and food brands worldwide. Every pixel is intentional. Every animation earns its place. No templates, no shortcuts — just code and craft.</p>
+      </div>
+
+      <div class="g-card b-badge rev" style="transition-delay:.08s">
+        <div class="b-badge-inner">
+          <div class="b-badge-num">5+</div>
+          <div class="b-badge-lbl">Live sites delivered</div>
+        </div>
+      </div>
+
+      <div class="g-card b-stat1 rev" style="transition-delay:.12s;padding:1.5rem">
+        <div class="b-stat-n">100%</div>
+        <div class="b-stat-l">Custom code</div>
+      </div>
+      <div class="g-card b-stat2 rev" style="transition-delay:.16s">
+        <div class="b-stat-n">$0</div>
+        <div class="b-stat-l">Templates</div>
+      </div>
+      <div class="g-card b-stat3 rev" style="transition-delay:.18s">
+        <div class="b-stat-n">24h</div>
+        <div class="b-stat-l">Reply time</div>
+      </div>
+
+      <div class="g-card b-skills rev" style="transition-delay:.1s">
+        <div class="b-skills-title">Specialties</div>
+        <div class="b-skills-list">
+          <span class="bsk">🍽 Restaurant Sites</span>
+          <span class="bsk">✨ Luxury UI</span>
+          <span class="bsk">📱 Mobile First</span>
+          <span class="bsk">🔍 SEO Optimized</span>
+          <span class="bsk">⚡ Fast Delivery</span>
+          <span class="bsk">💳 USD Payments</span>
+          <span class="bsk">🎬 Cinematic Animations</span>
+          <span class="bsk">🌍 International Clients</span>
+        </div>
+      </div>
+
+      <div class="g-card b-avail rev" style="transition-delay:.14s">
+        <div class="b-avail-dot"></div>
+        <span>Open for projects</span>
+      </div>
+
+      <div class="g-card b-location rev" style="transition-delay:.18s">
+        <div class="b-loc-city">India 🇮🇳</div>
+        <div class="b-loc-sub">Serving clients worldwide</div>
+      </div>
+
+      <div class="g-card b-quote rev" style="transition-delay:.2s">
+        <p class="b-quote-text">"I don't just build websites — I build digital experiences that make your restaurant <em>impossible to ignore.</em>"</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WORK — HORIZONTAL SCROLL -->
+<div id="work-section">
+  <div id="work-sticky">
+    <div class="aurora a1" style="opacity:.2"></div>
+    <div class="wk-head">
+      <div>
+        <div class="s-eyebrow">Portfolio</div>
+        <h2 class="s-title" style="font-size:clamp(1.8rem,3vw,2.8rem)">Selected <em>Projects</em></h2>
+      </div>
+      <div class="wk-ctr"><em id="wCur">01</em> / 05</div>
+    </div>
+    <div id="work-track">
+
+      <div class="pc" onclick="window.open('https://bistro-cafe-eight.vercel.app/','_blank')">
+        <div class="pc-accent pc-accent1"></div>
+        <div class="pc-bg"><div class="pc-iframe-wrap"><iframe class="pc-iframe" src="https://bistro-cafe-eight.vercel.app/" loading="lazy" scrolling="no"></iframe><div class="pc-tint"></div></div></div>
+        <div class="pc-ov"></div>
+        <div class="pc-ct">
+          <div class="pc-chip">Featured · Miami, USA</div>
+          <div class="pc-ttl">Bistro Café<br>Miami</div>
+          <div class="pc-tags"><span class="pc-tag">Luxury UI</span><span class="pc-tag">3D Cards</span><span class="pc-tag">Preloader</span><span class="pc-tag">4.9★</span></div>
+          <div class="pc-desc">Cinematic preloader, 3D menu hover cards, testimonials carousel, live reservations form.</div>
+          <a class="pc-cta" href="https://bistro-cafe-eight.vercel.app/" target="_blank" onclick="event.stopPropagation()">View Live ↗</a>
+        </div>
+      </div>
+
+      <div class="pc" onclick="window.open('https://redoak-nu.vercel.app/','_blank')">
+        <div class="pc-accent pc-accent2"></div>
+        <div class="pc-bg"><div class="pc-iframe-wrap"><iframe class="pc-iframe" src="https://redoak-nu.vercel.app/" loading="lazy" scrolling="no"></iframe><div class="pc-tint"></div></div></div>
+        <div class="pc-ov"></div>
+        <div class="pc-ct">
+          <div class="pc-chip">Restaurant · Balaghat, India</div>
+          <div class="pc-ttl">RedOak<br>Restaurant</div>
+          <div class="pc-tags"><span class="pc-tag">WhatsApp Order</span><span class="pc-tag">Menu Filter</span></div>
+          <div class="pc-desc">Balaghat's #1 aesthetic dining — WhatsApp ordering, festival event bookings, local SEO.</div>
+          <a class="pc-cta" href="https://redoak-nu.vercel.app/" target="_blank" onclick="event.stopPropagation()">View Live ↗</a>
+        </div>
+      </div>
+
+      <div class="pc" onclick="window.open('https://thunder-cafe-7mr6.vercel.app/','_blank')">
+        <div class="pc-accent pc-accent3"></div>
+        <div class="pc-bg"><div class="pc-iframe-wrap"><iframe class="pc-iframe" src="https://thunder-cafe-7mr6.vercel.app/" loading="lazy" scrolling="no"></iframe><div class="pc-tint"></div></div></div>
+        <div class="pc-ov"></div>
+        <div class="pc-ct">
+          <div class="pc-chip">Café · Balaghat, India</div>
+          <div class="pc-ttl">Thunder<br>Café</div>
+          <div class="pc-tags"><span class="pc-tag">5-Star</span><span class="pc-tag">Event Booking</span></div>
+          <div class="pc-desc">Bold energy aesthetic, 5★ rated — party & event booking system with dynamic gallery.</div>
+          <a class="pc-cta" href="https://thunder-cafe-7mr6.vercel.app/" target="_blank" onclick="event.stopPropagation()">View Live ↗</a>
+        </div>
+      </div>
+
+      <div class="pc" onclick="window.open('https://whip-my-soul.vercel.app/','_blank')">
+        <div class="pc-accent pc-accent4"></div>
+        <div class="pc-bg"><div class="pc-iframe-wrap"><iframe class="pc-iframe" src="https://whip-my-soul.vercel.app/" loading="lazy" scrolling="no"></iframe><div class="pc-tint"></div></div></div>
+        <div class="pc-ov"></div>
+        <div class="pc-ct">
+          <div class="pc-chip">Food Brand</div>
+          <div class="pc-ttl">Whip My<br>Soul</div>
+          <div class="pc-tags"><span class="pc-tag">Creative Brand</span><span class="pc-tag">Storytelling</span></div>
+          <div class="pc-desc">Expressive food brand with emotional visual storytelling and bold creative direction.</div>
+          <a class="pc-cta" href="https://whip-my-soul.vercel.app/" target="_blank" onclick="event.stopPropagation()">View Live ↗</a>
+        </div>
+      </div>
+
+      <div class="pc" onclick="window.open('https://chocolate-story.vercel.app/','_blank')">
+        <div class="pc-accent pc-accent5"></div>
+        <div class="pc-bg"><div class="pc-iframe-wrap"><iframe class="pc-iframe" src="https://chocolate-story.vercel.app/" loading="lazy" scrolling="no"></iframe><div class="pc-tint"></div></div></div>
+        <div class="pc-ov"></div>
+        <div class="pc-ct">
+          <div class="pc-chip">Dessert Brand</div>
+          <div class="pc-ttl">Chocolate<br>Story</div>
+          <div class="pc-tags"><span class="pc-tag">E-Commerce</span><span class="pc-tag">Rich Design</span></div>
+          <div class="pc-desc">Indulgent dessert brand with rich dark palette and e-commerce-ready architecture.</div>
+          <a class="pc-cta" href="https://chocolate-story.vercel.app/" target="_blank" onclick="event.stopPropagation()">View Live ↗</a>
+        </div>
+      </div>
+
+    </div>
+    <div class="wk-hint">
+      <div class="wk-hint-icon"><span></span><span></span><span></span></div>
+      Drag or scroll
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="aurora a2" style="opacity:.15"></div>
+  <div class="sv-max">
+    <div class="sv-head">
+      <div>
+        <div class="s-eyebrow rev">What I Offer</div>
+        <h2 class="s-title">
+          <span class="tl"><span>Services &</span></span>
+          <span class="tl" style="transition-delay:.1s"><span class="gr">Pricing</span></span>
+        </h2>
+      </div>
+      <p class="rev" style="font-size:.9rem;color:var(--txt2);max-width:300px;line-height:1.8;transition-delay:.15s">Simple pricing, no hidden costs. You get a world-class custom website.</p>
+    </div>
+    <div class="sv-grid">
+      <div class="sv-card g-card rev">
+        <div class="sv-glow sv-g1"></div>
+        <span class="sv-ico">⚡</span>
+        <div class="sv-divider"></div>
+        <div class="sv-ttl">Quick Landing Page</div>
+        <p class="sv-desc">Single-page site for a new café, event, or launch. Clean, blazing fast, mobile-perfect. Delivered in 3–5 days.</p>
+        <div class="sv-price">From $80 USD</div>
+      </div>
+      <div class="sv-card g-card rev" style="transition-delay:.1s;border-color:rgba(167,139,250,.2)">
+        <div class="sv-pop-badge">Most Popular</div>
+        <div class="sv-glow sv-g2"></div>
+        <span class="sv-ico">🍽</span>
+        <div class="sv-divider"></div>
+        <div class="sv-ttl">Restaurant Website</div>
+        <p class="sv-desc">Full custom site — menu, gallery, reservations, Google Maps, reviews & SEO. Everything your restaurant needs online.</p>
+        <div class="sv-price">From $150 USD</div>
+      </div>
+      <div class="sv-card g-card rev" style="transition-delay:.2s">
+        <div class="sv-glow sv-g3"></div>
+        <span class="sv-ico">✨</span>
+        <div class="sv-divider"></div>
+        <div class="sv-ttl">Luxury Premium Site</div>
+        <p class="sv-desc">Cinematic preloader, 3D animations, custom cursor & parallax. For brands that want to look extraordinary online.</p>
+        <div class="sv-price">From $300 USD</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="aurora a3" style="opacity:.2"></div>
+  <div class="ct-max">
+    <div class="s-eyebrow rev">Get In Touch</div>
+    <h2 class="s-title">
+      <span class="tl"><span>Let's build something</span></span>
+      <span class="tl" style="transition-delay:.1s"><span><em>unforgettable.</em></span></span>
+    </h2>
+    <div class="ct-grid">
+      <div class="ct-left rev">
+        <p class="ct-sub">Have a restaurant or food brand that needs a stunning website? I reply within 24 hours, always.</p>
+        <div class="ct-links">
+          <a href="mailto:baheved@gmail.com" class="ctm">
+            <div class="ctm-ico">✉️</div>
+            <div><div class="ctm-lbl">Email</div><div class="ctm-val">baheved@gmail.com</div></div>
+          </a>
+          <a href="https://wa.me/919993498363" target="_blank" class="ctm">
+            <div class="ctm-ico">💬</div>
+            <div><div class="ctm-lbl">WhatsApp</div><div class="ctm-val">+91 99934 98363</div></div>
+          </a>
+          <a href="https://bistro-cafe-eight.vercel.app/" target="_blank" class="ctm">
+            <div class="ctm-ico">🌐</div>
+            <div><div class="ctm-lbl">Featured Work</div><div class="ctm-val">Bistro Café Miami ↗</div></div>
+          </a>
+        </div>
+      </div>
+      <div class="ct-right rev" style="transition-delay:.15s">
+        <div class="ct-card">
+          <div class="ct-card-glow"></div>
+          <div class="ct-avail"><div class="ct-avail-dot"></div>Open for new projects</div>
+          <div class="ct-quote">Your restaurant deserves a website as <em>extraordinary</em> as your food.</div>
+          <p class="ct-body">I don't just build websites — I build digital experiences that bring real customers, real bookings, and real revenue. Let's make your brand impossible to ignore online.</p>
+          <a href="mailto:baheved@gmail.com" class="ct-cta">Send a Message →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="ft">
+    <div class="ft-logo">Vedant <em>Bahe</em></div>
+    <div class="ft-copy">© 2025 · Premium Web Design · India</div>
+    <div class="ft-lnks">
+      <a href="#work-section">Work</a>
+      <a href="mailto:baheved@gmail.com">Email</a>
+      <a href="https://wa.me/919993498363" target="_blank">WhatsApp</a>
+    </div>
+  </div>
+</footer>
+
+<button id="stt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+/* ─── BLOB CURSOR ─── */
+const blob=document.getElementById('blob'), blob2=document.getElementById('blob2');
+let mx=0,my=0, bx=0,by=0, b2x=0,b2y=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;blob2.style.left=mx+'px';blob2.style.top=my+'px';});
+document.addEventListener('mousedown',()=>document.body.classList.add('clk'));
+document.addEventListener('mouseup',()=>document.body.classList.remove('clk'));
+document.querySelectorAll('a,button,.pc,.ctm,.sv-card,.bsk,.g-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+(function raf(){
+  bx+=(mx-bx)*.1; by+=(my-by)*.1;
+  blob.style.left=bx+'px'; blob.style.top=by+'px';
+  requestAnimationFrame(raf);
+})();
+
+/* ─── MOUSE SPOTLIGHT on glass cards ─── */
+document.querySelectorAll('.g-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    card.style.setProperty('--mx',(e.clientX-r.left)+'px');
+    card.style.setProperty('--my',(e.clientY-r.top)+'px');
+  });
+});
+
+/* ─── 3D TILT on project cards ─── */
+document.querySelectorAll('.pc').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const cx=r.left+r.width/2, cy=r.top+r.height/2;
+    const rx=(e.clientY-cy)/r.height*10;
+    const ry=(cx-e.clientX)/r.width*10;
+    card.style.transform=`translateY(-6px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    card.style.transformStyle='preserve-3d';
+  });
+  card.addEventListener('mouseleave',()=>{card.style.transform='';card.style.transition='transform .6s var(--spring)';});
+  card.addEventListener('mouseenter',()=>{card.style.transition='';});
+});
+
+/* ─── PRELOADER ─── */
+const ldFill=document.getElementById('ldFill'),ldPct=document.getElementById('ldPct'),ldWm=document.getElementById('ldwm'),ldOut=document.getElementById('ld-out');
+setTimeout(()=>ldWm.classList.add('show'),80);
+let n=0;
+const iv=setInterval(()=>{
+  n+=Math.floor(Math.random()*3)+2; if(n>100)n=100;
+  ldFill.style.width=n+'%'; ldPct.textContent=n+'%';
+  if(n>=100){clearInterval(iv);endLoader();}
+},40);
+function endLoader(){
+  setTimeout(()=>{
+    ldOut.style.transition='transform .9s cubic-bezier(.76,0,.24,1)'; ldOut.style.transform='scaleY(1)';
+    setTimeout(()=>{
+      document.getElementById('loader').style.display='none';
+      document.getElementById('nav').classList.add('v');
+      heroReveal();
+    },900);
+  },300);
+}
+
+/* ─── HERO REVEAL ─── */
+function heroReveal(){
+  const badge=document.getElementById('hBadge');
+  setTimeout(()=>{badge.style.transition='all .7s var(--spring)';badge.style.opacity='1';badge.style.transform='translateY(0)';},100);
+  document.querySelectorAll('.h-word span').forEach((w,i)=>{
+    setTimeout(()=>{w.style.transition='transform .8s cubic-bezier(.76,0,.24,1)';w.style.transform='translateY(0)';},200+i*80);
+  });
+  const desc=document.getElementById('hDesc');
+  setTimeout(()=>{desc.style.transition='transform .8s cubic-bezier(.76,0,.24,1)';desc.style.transform='translateY(0)';},800);
+  const btns=document.getElementById('hBtns');
+  setTimeout(()=>{btns.style.transition='all .6s var(--spring)';btns.style.opacity='1';btns.style.transform='translateY(0)';},950);
+  const stats=document.getElementById('hStats');
+  setTimeout(()=>{stats.style.transition='all .6s var(--spring) .1s';stats.style.opacity='1';stats.style.transform='translateY(0)';},1050);
+  setTimeout(()=>{const s=document.getElementById('hScroll');s.style.transition='opacity .5s';s.style.opacity='1';},1300);
+}
+
+/* ─── MARQUEE ─── */
+const mqItems=[
+  ['Restaurant Websites',true],['Luxury UI Design',false],['3D Animations',true],
+  ['Zero Templates',false],['Mobile First',true],['SEO Optimized',false],
+  ['Fast Delivery',true],['USD Payments',false],['India → Worldwide',true],['Custom Cursors',false],
+];
+function buildMq(wrap,rev){
+  const mq=document.createElement('div');
+  mq.className='mq-t'+(rev?' r':'');
+  const h=[...mqItems,...mqItems].map(([t,b])=>`<div class="mq-item"${b?' style="color:var(--txt)"':''}><span class="mq-sep"></span>${b?'<b>'+t+'</b>':t}</div>`).join('');
+  mq.innerHTML=h; wrap.appendChild(mq);
+}
+buildMq(document.getElementById('mq1w'),false);
+buildMq(document.getElementById('mq2w'),true);
+
+/* ─── NAV ─── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('stt').classList.toggle('on',window.scrollY>600);
+});
+
+/* ─── MOBILE NAV ─── */
+const mobNav=document.getElementById('mobNav'),mobOv=document.getElementById('mobOv'),hbg=document.getElementById('hbg');
+function toggleNav(){
+  const on=mobNav.classList.toggle('on');mobOv.classList.toggle('on',on);
+  const b=hbg.querySelectorAll('span');
+  if(on){b[0].style.transform='translateY(5.5px) rotate(45deg)';b[1].style.opacity='0';b[2].style.transform='translateY(-5.5px) rotate(-45deg)';}
+  else{b[0].style.transform='';b[1].style.opacity='';b[2].style.transform='';}
+}
+function closeNav(){mobNav.classList.remove('on');mobOv.classList.remove('on');const b=hbg.querySelectorAll('span');b[0].style.transform='';b[1].style.opacity='';b[2].style.transform='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeNav();});
+
+/* ─── SCROLL REVEAL ─── */
+const io=new IntersectionObserver(ents=>{
+  ents.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('v');
+      e.target.querySelectorAll('.tl').forEach((l,i)=>setTimeout(()=>l.classList.add('v'),i*120));
+    }
+  });
+},{threshold:.1});
+document.querySelectorAll('.rev,.s-title').forEach(el=>io.observe(el));
+
+/* ─── HORIZONTAL SCROLL ─── */
+(()=>{
+  const sec=document.getElementById('work-section');
+  const track=document.getElementById('work-track');
+  const cards=document.querySelectorAll('.pc');
+  const ctr=document.getElementById('wCur');
+  let tX=0,lX=0;
+  const maxX=()=>Math.max(0,track.scrollWidth-window.innerWidth+160);
+  function setup(){sec.style.height=(maxX()+window.innerHeight+100)+'px';}
+  setup(); window.addEventListener('resize',setup);
+
+  let drag=false,sX=0,sS=0;
+  track.addEventListener('mousedown',e=>{drag=true;sX=e.clientX;sS=tX;});
+  window.addEventListener('mouseup',()=>drag=false);
+  window.addEventListener('mousemove',e=>{if(drag)tX=Math.max(0,Math.min(sS-(e.clientX-sX),maxX()));});
+  let tx0=0,ts0=0;
+  track.addEventListener('touchstart',e=>{tx0=e.touches[0].clientX;ts0=tX;},{passive:true});
+  track.addEventListener('touchmove',e=>{tX=Math.max(0,Math.min(ts0-(e.touches[0].clientX-tx0),maxX()));},{passive:true});
+  window.addEventListener('scroll',()=>{
+    const top=sec.getBoundingClientRect().top;
+    const h=sec.offsetHeight-window.innerHeight;
+    if(top<=0&&Math.abs(top)<=h)tX=(-top/h)*maxX();
+  });
+  (function raf(){
+    lX+=(tX-lX)*.1; track.style.transform=`translateX(${-lX}px)`;
+    const idx=Math.round((lX/Math.max(1,maxX()))*(cards.length-1));
+    ctr.textContent=String(Math.max(0,Math.min(idx,cards.length-1))+1).padStart(2,'0');
+    requestAnimationFrame(raf);
+  })();
+})();
+
+/* ─── SMOOTH SCROLL ─── */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}
+  });
+});
+</script>
+</body>
+</html>
