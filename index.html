@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script></script>
 <style>
 /* ════════════════════════════════════════
    TOKENS
@@ -70,7 +70,10 @@ body.h #c-ring{width:50px;height:50px;border-color:rgba(0,191,204,.4);}
    3D BG CANVAS
 ════════════════════════════════════════ */
 #bg{
-  position:fixed;inset:0;z-index:0;
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  width:100vw;height:100vh;
+  z-index:0;
   pointer-events:none;opacity:0;
   transition:opacity 2.4s ease;
 }
@@ -87,60 +90,10 @@ body.h #c-ring{width:50px;height:50px;border-color:rgba(0,191,204,.4);}
 })();
 
 /* ════════════════════════════════════════
-   PRELOADER
-════════════════════════════════════════ */
-#loader{
-  position:fixed;inset:0;z-index:8000;
-  background:var(--ink);
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:0;
-}
-.ld-line{
-  width:1px;height:0;
-  background:linear-gradient(180deg,transparent,var(--gold),transparent);
-  transition:height 1.2s cubic-bezier(.16,1,.3,1);
-  margin-bottom:2.5rem;
-}
-.ld-line.g{height:90px;}
-.ld-name-clip{overflow:hidden;margin-bottom:.4rem;}
-.ld-name{
-  font-family:var(--serif);font-size:clamp(3rem,7vw,6.5rem);
-  font-weight:300;letter-spacing:.06em;color:var(--snow);
-  transform:translateY(105%);
-  transition:transform 1.1s .2s cubic-bezier(.16,1,.3,1);
-}
-.ld-name em{font-style:italic;color:var(--gold);}
-.ld-name.u{transform:translateY(0);}
-.ld-sub{
-  font-family:var(--mono);font-size:.6rem;letter-spacing:.45em;
-  text-transform:uppercase;color:var(--muted);
-  opacity:0;transition:opacity .9s .9s ease;
-  margin-bottom:3.5rem;
-}
-.ld-sub.s{opacity:1;}
-.ld-bar-wrap{
-  width:clamp(240px,30vw,360px);height:1px;
-  background:var(--border);position:relative;
-}
-.ld-bar{
-  position:absolute;inset:0;width:0;
-  background:linear-gradient(90deg,var(--teal-dk),var(--gold));
-  box-shadow:0 0 12px rgba(200,169,110,.5);
-  transition:width .04s linear;
-}
-.ld-pct{
-  font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;
-  color:var(--muted);margin-top:1rem;text-align:center;
-  opacity:0;transition:opacity .9s 1.1s ease;
-}
-.ld-pct.s{opacity:1;}
-
-/* ════════════════════════════════════════
    MAIN WRAPPER
 ════════════════════════════════════════ */
-#main{opacity:0;transition:opacity 1.4s ease;position:relative;z-index:1;}
-#main.on{opacity:1;}
+#main{opacity:1;position:relative;z-index:1;}
+
 
 /* ════════════════════════════════════════
    NAV
@@ -227,7 +180,7 @@ nav::after{
   align-items:center;gap:1.4rem;z-index:10;
   opacity:0;transition:opacity 1.2s 1.5s ease;
 }
-.side-soc.on{opacity:1;}
+.side-soc{opacity:1 !important;}
 .side-soc::before,.side-soc::after{
   content:'';width:1px;height:36px;
   background:var(--border);display:block;
@@ -370,14 +323,13 @@ nav::after{
 .spline-frame{width:100%;height:100%;border:none;background:transparent;display:block;}
 
 /* On state */
-#main.on .h-eyebrow,
-#main.on .h-title,
-#main.on .h-divider,
-#main.on .h-bio,
-#main.on .h-cta,
-#main.on .h-stats,
-#main.on .h-resume,
-#main.on .h-scroll{opacity:1;transform:none;}
+.h-eyebrow,.h-title,.h-divider,.h-bio,.h-cta,.h-stats,.h-resume,.h-scroll{opacity:1;transform:none;}
+
+/* On state — hero reveals */
+.h-eyebrow,.h-title,.h-divider,.h-bio,.h-cta,.h-stats,.h-resume,.h-scroll{
+  opacity:1 !important;transform:none !important;
+}
+.side-soc{ opacity:1 !important; }
 
 /* ════════════════════════════════════════
    TICKER
@@ -861,11 +813,6 @@ footer{
 <div id="c-dot"></div>
 <div id="c-ring"></div>
 
-<!-- ═══════════════════════════════
-     PRELOADER
-═══════════════════════════════ -->
-<div id="loader">
-  <div class="ld-line" id="ld-line"></div>
   <div class="ld-name-clip">
     <div class="ld-name" id="ld-name">Vedant <em>Bahe</em></div>
   </div>
@@ -1227,7 +1174,7 @@ footer{
     <div class="ct-deets rv d3">
       <div class="ct-d">
         <span class="ct-d-lbl">Email</span>
-        <a id="ct-email-link" href="#" class="ct-d-val">baheved@gmail.com</a>
+        <a id="ct-email-link" href="#" class="ct-d-val"><span class="__cf_email__" data-cfemail="690b08010c1f0c0d290e04080005470a0604">[email&#160;protected]</span></a>
       </div>
       <div class="ct-d">
         <span class="ct-d-lbl">Phone</span>
@@ -1297,53 +1244,6 @@ footer{
   var email = parts.join('');
   var el = document.getElementById('ct-email-link');
   if(el){ el.href = 'mailto:' + email; el.textContent = email; }
-})();
-
-/* ════════════════════════════════════════
-   PRELOADER
-════════════════════════════════════════ */
-(function(){
-  var line  = document.getElementById('ld-line');
-  var name  = document.getElementById('ld-name');
-  var sub   = document.getElementById('ld-sub');
-  var bar   = document.getElementById('ld-bar');
-  var pct   = document.getElementById('ld-pct');
-  var ldr   = document.getElementById('loader');
-  var main  = document.getElementById('main');
-  var soc   = document.getElementById('side-soc');
-
-  setTimeout(function(){ line.classList.add('g'); }, 80);
-  setTimeout(function(){ name.classList.add('u'); }, 300);
-  setTimeout(function(){ sub.classList.add('s');  pct.classList.add('s'); }, 800);
-
-  var prog = 0, done = false;
-  function tick(){
-    if(done) return;
-    prog += Math.random()*3.5 + 1.2;
-    if(prog >= 100){ prog=100; done=true; }
-    bar.style.width = prog+'%';
-    pct.textContent = String(Math.floor(prog)).padStart(3,'0');
-    if(done){ setTimeout(dismiss, 480); return; }
-    setTimeout(tick, 28);
-  }
-  setTimeout(tick, 900);
-  /* safety fallback */
-  setTimeout(function(){ if(!done){ done=true; dismiss(); } }, 5000);
-
-  function dismiss(){
-    ldr.style.transition = 'opacity 1.1s ease, transform 1.1s ease';
-    ldr.style.opacity = '0';
-    ldr.style.transform = 'scale(1.025)';
-    main.style.opacity = '1';
-    setTimeout(function(){
-      ldr.style.display = 'none';
-      main.classList.add('on');
-      if(soc) soc.classList.add('on');
-      try{ initBG(); }catch(e){}
-      try{ initReveal(); }catch(e){}
-      try{ initTilt(); }catch(e){}
-    }, 1100);
-  }
 })();
 
 /* ════════════════════════════════════════
@@ -1558,6 +1458,19 @@ function initBG(){
     .catch(function(){ btnTxt.textContent = 'Try Again'; });
   });
 })();
+
+/* ════════════════════════════════════════
+   AUTO INIT — fires on page load
+════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function(){
+  var main = document.getElementById('main');
+  var soc  = document.getElementById('side-soc');
+  if(main){ main.style.opacity='1'; main.classList.add('on'); }
+  if(soc)  soc.classList.add('on');
+  try{ initBG(); }catch(e){ console.log('BG err',e); }
+  try{ initReveal(); }catch(e){ console.log('Reveal err',e); }
+  try{ initTilt(); }catch(e){ console.log('Tilt err',e); }
+});
 </script>
 </body>
 </html>
