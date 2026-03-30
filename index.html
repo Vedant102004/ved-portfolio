@@ -1,859 +1,712 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Vedant Bahe — UI/UX Designer & Developer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200;300;400;700;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vedant Bahe — Premium Web Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
 :root{
-  --bg:#060810;
-  --bg2:#090c16;
-  --bg3:#0d1020;
-  --panel:#0b0e1a;
-  --line:rgba(255,255,255,.06);
-  --muted:#1e2235;
-  --dim:#4a5270;
-  --mid:#7a85a0;
-  --silver:#b0bac8;
-  --snow:#eceef5;
-  --acid:#b8ff5c;
-  --acid2:#ceff7a;
-  --acid-dim:rgba(184,255,92,.1);
-  --violet:#8b5cf6;
-  --display:'Unbounded',sans-serif;
-  --serif:'Libre Baskerville',Georgia,serif;
-  --mono:'IBM Plex Mono',monospace;
-  --ease:cubic-bezier(.16,1,.3,1);
-}
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{font-size:16px;}
-body{background:var(--bg);color:var(--snow);font-family:var(--mono);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased;}
-body::before{
-  content:'';position:fixed;inset:0;z-index:8000;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-  opacity:.55;
+  --gold:#c9a96e;
+  --gold-d:rgba(201,169,110,0.12);
+  --gold-g:rgba(201,169,110,0.4);
+  --white:#fff;
+  --muted:rgba(255,255,255,0.5);
+  --bg:#06060a;
+  --card:rgba(255,255,255,0.025);
+  --br:rgba(201,169,110,0.14);
 }
 
-/* ── CURSOR ─────────────────────── */
-#cdot{
-  position:fixed;pointer-events:none;z-index:9999;
-  transform:translate(-50%,-50%);
-  width:6px;height:6px;border-radius:50%;background:var(--acid);
-}
-#cring{
-  position:fixed;pointer-events:none;z-index:9998;
-  transform:translate(-50%,-50%);
-  width:34px;height:34px;border:1px solid rgba(184,255,92,.25);border-radius:50%;
-  transition:width .25s,height .25s,border-color .25s,border-radius .25s;
-}
-body.hov #cring{width:58px;height:58px;border-color:rgba(184,255,92,.5);border-radius:0;transform:translate(-50%,-50%) rotate(45deg);}
+html{scroll-behavior:smooth}
 
-/* ── BG CANVAS ─────────────────── */
-#bgc{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0;transition:opacity 2s ease;}
-#bgc.on{opacity:1;}
-#main{position:relative;z-index:1;}
+body{
+  background:var(--bg);
+  color:var(--white);
+  font-family:'Syne',sans-serif;
+  overflow-x:hidden;
+}
 
-/* ── NAV ────────────────────────── */
-#nav{
-  position:fixed;top:0;left:0;right:0;z-index:500;
-  height:68px;padding:0 4vw;
+@media(hover:hover){body{cursor:none}}
+
+/* ── CURSOR ── */
+.cur,.cur-ring{position:fixed;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%)}
+.cur{width:8px;height:8px;background:var(--gold);transition:transform .12s ease}
+.cur-ring{width:38px;height:38px;border:1px solid var(--gold);opacity:.45;transition:transform .25s ease,opacity .25s ease}
+@media(hover:none){.cur,.cur-ring{display:none}}
+
+/* ── CANVAS ── */
+#bg-canvas{position:fixed;inset:0;z-index:0}
+
+/* ── NOISE ── */
+#noise{
+  position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.028;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat:repeat;background-size:180px 180px;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:30px 70px;
   display:flex;align-items:center;justify-content:space-between;
+  transition:all .4s ease;
 }
-#nav::after{
-  content:'';position:absolute;inset:0;z-index:-1;
-  background:linear-gradient(180deg,rgba(6,8,16,.96) 0%,transparent 100%);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--line);
+nav.scrolled{
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  background:rgba(6,6,10,.82);
+  padding:18px 70px;
+  border-bottom:1px solid var(--br);
 }
-.nlogo{display:flex;align-items:center;gap:.9rem;text-decoration:none;}
-.nbadge{
-  width:36px;height:36px;background:var(--acid);
-  display:grid;place-items:center;
-  font-family:var(--display);font-size:.65rem;font-weight:700;
-  color:var(--bg);letter-spacing:.04em;
-  transition:background .3s;
+.nav-logo{
+  font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;
+  color:var(--white);text-decoration:none;letter-spacing:.04em;
 }
-.nlogo:hover .nbadge{background:var(--acid2);}
-.nname{font-family:var(--mono);font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);transition:color .3s;}
-.nlogo:hover .nname{color:var(--silver);}
-.nlinks{display:flex;gap:2.4rem;list-style:none;}
-.nlinks a{
-  font-family:var(--mono);font-size:.52rem;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--dim);text-decoration:none;
-  position:relative;transition:color .3s;
+.nav-logo em{color:var(--gold);font-style:normal}
+.nav-links{display:flex;gap:44px;list-style:none}
+.nav-links a{
+  color:var(--muted);text-decoration:none;font-size:.7rem;
+  letter-spacing:.18em;text-transform:uppercase;font-weight:600;
+  transition:color .3s;
 }
-.nlinks a::after{content:'';position:absolute;left:0;bottom:-4px;width:0;height:1px;background:var(--acid);transition:width .3s;}
-.nlinks a:hover{color:var(--snow);}
-.nlinks a:hover::after{width:100%;}
-.navail{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);}
-.ndot{width:5px;height:5px;border-radius:50%;background:#3ddc84;box-shadow:0 0 6px rgba(61,220,132,.7);animation:blink 2.4s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:.25;}}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{
+  padding:10px 26px;border:1px solid var(--gold);
+  color:var(--gold);text-decoration:none;font-size:.68rem;
+  letter-spacing:.16em;text-transform:uppercase;font-weight:700;
+  transition:all .3s;
+}
+.nav-cta:hover{background:var(--gold);color:var(--bg)}
+@media(max-width:768px){nav{padding:20px 24px}.nav-links{display:none}nav.scrolled{padding:14px 24px}}
+
+/* ── CONTENT ── */
+.content{position:relative;z-index:10}
+
+/* ── HERO ── */
+.hero{
+  height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+  padding:0 40px;position:relative;
+}
+.hero-tag{
+  font-size:.62rem;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:36px;
+  display:flex;align-items:center;gap:18px;
+  opacity:0;animation:riseUp 1s ease .4s forwards;
+}
+.hero-tag::before,.hero-tag::after{content:'';height:1px;width:44px;background:var(--gold);opacity:.4}
+h1.hero-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(4.5rem,11vw,10rem);
+  font-weight:300;line-height:.88;letter-spacing:-.02em;
+  margin-bottom:14px;
+  opacity:0;animation:riseUp 1s ease .65s forwards;
+}
+h1.hero-name em{font-style:italic;color:var(--gold)}
+.hero-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1rem,2.2vw,1.55rem);font-weight:300;
+  color:var(--muted);font-style:italic;
+  margin-bottom:60px;max-width:540px;line-height:1.55;
+  opacity:0;animation:riseUp 1s ease .85s forwards;
+}
+.hero-btns{
+  display:flex;gap:20px;align-items:center;flex-wrap:wrap;justify-content:center;
+  opacity:0;animation:riseUp 1s ease 1.05s forwards;
+}
+.btn-g{
+  padding:16px 44px;background:var(--gold);color:var(--bg);
+  text-decoration:none;font-size:.7rem;letter-spacing:.2em;
+  text-transform:uppercase;font-weight:700;transition:all .35s;
+}
+.btn-g:hover{background:#e5c48a;transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,169,110,.3)}
+.btn-o{
+  padding:16px 44px;border:1px solid rgba(255,255,255,.2);
+  color:var(--muted);text-decoration:none;font-size:.7rem;
+  letter-spacing:.2em;text-transform:uppercase;font-weight:700;transition:all .35s;
+}
+.btn-o:hover{border-color:var(--gold);color:var(--gold)}
+
+.scroll-cue{
+  position:absolute;bottom:44px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  opacity:0;animation:riseUp 1s ease 1.5s forwards;
+}
+.scroll-cue span{font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
+.scroll-bar{width:1px;height:56px;background:linear-gradient(to bottom,var(--gold),transparent);animation:pulse 2s ease infinite}
+
+/* ── GLASS SEPARATOR ── */
+.sep{position:relative;z-index:10;height:1px;background:linear-gradient(90deg,transparent,var(--br),transparent)}
+
+/* ── COMMON SECTION ── */
+section{position:relative;padding:150px 80px}
+@media(max-width:768px){section{padding:100px 24px}}
+
+.sec-label{
+  font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:22px;
+  display:flex;align-items:center;gap:14px;
+}
+.sec-label::after{content:'';height:1px;width:56px;background:var(--gold);opacity:.4}
+.sec-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.8rem,5.5vw,5.2rem);
+  font-weight:300;line-height:1.08;margin-bottom:80px;
+}
+.sec-title em{font-style:italic;color:var(--gold)}
+
+/* ── ABOUT ── */
+.about-section{
+  background:rgba(6,6,10,.65);
+  backdrop-filter:blur(48px);-webkit-backdrop-filter:blur(48px);
+}
+.about-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:100px;
+  align-items:start;max-width:1200px;margin:0 auto;
+}
+@media(max-width:900px){.about-grid{grid-template-columns:1fr;gap:60px}}
+.about-text p{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.18rem;color:var(--muted);line-height:1.85;margin-bottom:22px;
+}
+.about-text p strong{color:var(--white)}
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.stat{
+  padding:34px 28px;border:1px solid var(--br);
+  position:relative;overflow:hidden;transition:border-color .3s;
+}
+.stat::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+  transform:scaleX(0);transform-origin:left;transition:transform .4s ease;
+}
+.stat:hover::before{transform:scaleX(1)}
+.stat:hover{border-color:var(--gold-g)}
+.stat-n{
+  font-family:'Cormorant Garamond',serif;font-size:3.8rem;
+  font-weight:300;color:var(--gold);line-height:1;margin-bottom:10px;
+}
+.stat-l{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+
+/* ── PROJECTS ── */
+.projects-wrap{max-width:1400px;margin:0 auto;padding:150px 80px}
+@media(max-width:768px){.projects-wrap{padding:100px 24px}}
+.proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:1100px){.proj-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.proj-grid{grid-template-columns:1fr}}
+.proj-card{
+  border:1px solid var(--br);background:var(--card);
+  overflow:hidden;transition:border-color .4s;
+  transform-style:preserve-3d;cursor:pointer;
+}
+.proj-card:hover{border-color:var(--gold-g)}
+.proj-card.wide{grid-column:span 2}
+@media(max-width:1100px){.proj-card.wide{grid-column:span 1}}
+.proj-img{position:relative;overflow:hidden;aspect-ratio:16/9}
+.proj-card.wide .proj-img{aspect-ratio:16/7.5}
+.proj-img img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .7s ease,filter .4s;
+  filter:saturate(.65) brightness(.65);
+}
+.proj-card:hover .proj-img img{transform:scale(1.06);filter:saturate(.85) brightness(.78)}
+.proj-img-grad{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 35%,rgba(6,6,10,.96))}
+.proj-info{padding:28px 30px 32px}
+.proj-chip{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;font-weight:600}
+.proj-title{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:400;line-height:1.12;margin-bottom:12px}
+.proj-desc{font-size:.8rem;color:var(--muted);line-height:1.75;margin-bottom:20px}
+.proj-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px}
+.proj-tag{padding:4px 11px;border:1px solid var(--br);font-size:.57rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.proj-link{
+  display:inline-flex;align-items:center;gap:9px;color:var(--gold);
+  text-decoration:none;font-size:.68rem;letter-spacing:.18em;
+  text-transform:uppercase;font-weight:700;transition:gap .3s;
+}
+.proj-link:hover{gap:16px}
+.proj-link::after{content:'↗';font-size:.9rem;font-weight:400}
+
+/* ── SKILLS ── */
+.skills-section{
+  background:rgba(6,6,10,.7);
+  backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+}
+.skills-inner{max-width:1200px;margin:0 auto}
+.skills-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+@media(max-width:900px){.skills-grid{grid-template-columns:repeat(2,1fr)}}
+.skill{
+  padding:38px 30px;border:1px solid var(--br);
+  position:relative;overflow:hidden;transition:border-color .3s;
+}
+.skill::after{
+  content:'';position:absolute;inset:0;
+  background:var(--gold-d);opacity:0;transition:opacity .3s;
+}
+.skill:hover::after{opacity:1}
+.skill:hover{border-color:var(--gold-g)}
+.skill-n{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;position:relative;z-index:1}
+.skill-name{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:400;position:relative;z-index:1}
+
+/* ── CONTACT ── */
+.contact-section{
+  text-align:center;max-width:860px;margin:0 auto;
+  padding:160px 80px;
+}
+@media(max-width:768px){.contact-section{padding:120px 24px}}
+.contact-section .sec-label{justify-content:center}
+.contact-section .sec-label::after{display:none}
+.contact-lead{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem,4vw,3.4rem);font-weight:300;
+  line-height:1.35;margin-bottom:52px;
+}
+.contact-lead em{font-style:italic;color:var(--gold)}
+.contact-email{
+  display:inline-block;font-family:'DM Mono',monospace;
+  font-size:.95rem;color:var(--gold);letter-spacing:.1em;
+  text-decoration:none;padding:20px 52px;border:1px solid var(--gold);
+  transition:all .4s;margin-bottom:64px;
+}
+.contact-email:hover{background:var(--gold);color:var(--bg)}
+.socials{display:flex;gap:44px;justify-content:center;list-style:none;flex-wrap:wrap}
+.socials a{
+  color:var(--muted);text-decoration:none;font-size:.62rem;
+  letter-spacing:.24em;text-transform:uppercase;transition:color .3s;
+}
+.socials a:hover{color:var(--gold)}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--br);padding:38px 80px;
+  display:flex;justify-content:space-between;align-items:center;
+  position:relative;z-index:10;
+}
+@media(max-width:768px){footer{padding:30px 24px;flex-direction:column;gap:14px;text-align:center}}
+.foot-copy{font-size:.62rem;letter-spacing:.1em;color:var(--muted)}
+.foot-note{font-family:'DM Mono',monospace;font-size:.58rem;color:rgba(201,169,110,.45);letter-spacing:.1em}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(44px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal.on{opacity:1;transform:translateY(0)}
+
+/* ── ANIMATIONS ── */
+@keyframes riseUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:.25}50%{opacity:.9}}
 </style>
+</head>
+<body>
 
-<style>
-/* ── HERO ────────────────────────── */
-#hero{
-  min-height:100vh;position:relative;overflow:hidden;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  padding:0 4vw 5rem;
-}
-
-/* ambient background text */
-.h-ambient{
-  position:absolute;right:-2vw;top:50%;
-  transform:translateY(-60%);
-  font-family:var(--display);
-  font-size:clamp(14rem,28vw,38rem);
-  font-weight:900;
-  color:transparent;
-  -webkit-text-stroke:1px rgba(184,255,92,.04);
-  line-height:.85;pointer-events:none;z-index:0;
-  letter-spacing:-.04em;user-select:none;
-}
-
-/* spline robot */
-.h-robot{
-  position:absolute;right:0;top:0;
-  width:50%;height:100%;z-index:1;
-}
-.h-robot iframe{width:100%;height:100%;border:none;background:transparent;}
-.h-robot-glow{
-  position:absolute;bottom:8%;left:40%;transform:translateX(-50%);
-  width:60%;height:44%;
-  background:radial-gradient(ellipse,rgba(184,255,92,.15) 0%,rgba(139,92,246,.08) 55%,transparent 72%);
-  filter:blur(35px);border-radius:50%;pointer-events:none;
-  animation:hglow 5s ease-in-out infinite;
-}
-@keyframes hglow{0%,100%{opacity:.45;transform:translateX(-50%) scale(1);}50%{opacity:1;transform:translateX(-50%) scale(1.12);}}
-
-/* content */
-.h-content{position:relative;z-index:3;max-width:55%;}
-
-/* index label */
-.h-index{
-  font-family:var(--mono);font-size:.52rem;letter-spacing:.38em;
-  text-transform:uppercase;color:var(--dim);
-  display:flex;align-items:center;gap:1rem;margin-bottom:1.8rem;
-}
-.h-index::before{content:'';width:28px;height:1px;background:var(--acid);}
-.h-index-badge{
-  background:var(--acid);color:var(--bg);
-  font-weight:400;padding:.2rem .55rem;font-size:.47rem;letter-spacing:.15em;
-}
-
-/* GIANT TITLE — condensed display */
-.h-title{
-  font-family:var(--display);
-  font-size:clamp(4.5rem,9.5vw,12rem);
-  font-weight:900;line-height:.85;
-  letter-spacing:-.04em;
-  margin-bottom:3rem;
-}
-.h-title .line{display:block;overflow:hidden;}
-.h-title .line-i{display:block;transform:translateY(108%);}
-.h-title .t-outline{
-  -webkit-text-stroke:1px rgba(236,238,245,.2);
-  color:transparent;
-}
-.h-title .t-acid{color:var(--acid);}
-.h-title .t-normal{color:var(--snow);}
-
-/* bottom bar */
-.h-bottom{
-  display:grid;grid-template-columns:1fr auto;gap:5rem;
-  align-items:end;border-top:1px solid var(--line);
-  padding-top:1.8rem;
-}
-.h-bio{
-  font-family:var(--mono);font-size:.78rem;line-height:1.95;
-  color:var(--dim);font-weight:300;max-width:420px;
-}
-.h-bio strong{color:var(--silver);font-weight:400;}
-.h-right{display:flex;flex-direction:column;align-items:flex-end;gap:1.6rem;}
-.h-btns{display:flex;gap:.8rem;}
-
-/* buttons */
-.btn-a{
-  font-family:var(--mono);font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;
-  padding:.85rem 2rem;background:var(--acid);color:var(--bg);font-weight:400;
-  text-decoration:none;display:inline-block;position:relative;overflow:hidden;
-  transition:color .35s;cursor:none;
-}
-.btn-a::before{content:'';position:absolute;inset:0;background:var(--acid2);transform:translateX(-101%);transition:transform .45s var(--ease);}
-.btn-a:hover::before{transform:translateX(0);}
-.btn-a span{position:relative;z-index:1;}
-.btn-b{
-  font-family:var(--mono);font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;
-  padding:.85rem 2rem;border:1px solid var(--line);color:var(--dim);
-  text-decoration:none;transition:border-color .3s,color .3s;cursor:none;
-}
-.btn-b:hover{border-color:rgba(255,255,255,.18);color:var(--snow);}
-.mag{display:inline-block;}
-
-/* stats */
-.h-stats{display:flex;gap:2.5rem;}
-.hst{text-align:right;}
-.hst-n{font-family:var(--display);font-size:2.4rem;font-weight:700;color:var(--snow);line-height:1;margin-bottom:.15rem;letter-spacing:-.04em;}
-.hst-n em{color:var(--acid);font-style:normal;font-size:1.4rem;font-weight:300;}
-.hst-l{font-family:var(--mono);font-size:.46rem;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);}
-
-/* vertical socials */
-.vsoc{
-  position:absolute;left:1.4vw;top:50%;transform:translateY(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:1.3rem;z-index:4;
-}
-.vsoc::before,.vsoc::after{content:'';width:1px;height:36px;background:var(--line);display:block;}
-.vsoc a{font-family:var(--mono);font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);writing-mode:vertical-rl;text-decoration:none;transition:color .3s;}
-.vsoc a:hover{color:var(--acid);}
-.hresume{
-  position:absolute;bottom:5.5rem;right:2vw;z-index:4;
-  font-family:var(--mono);font-size:.47rem;letter-spacing:.24em;
-  text-transform:uppercase;color:var(--dim);
-  writing-mode:vertical-rl;text-decoration:none;
-  display:flex;flex-direction:column;align-items:center;gap:.5rem;transition:color .3s;
-}
-.hresume::before{content:'';width:1px;height:28px;background:linear-gradient(180deg,transparent,var(--acid));}
-.hresume:hover{color:var(--acid);}
-.hscroll{position:absolute;bottom:2rem;left:4vw;z-index:4;display:flex;flex-direction:column;align-items:center;gap:.4rem;}
-.hscroll-bar{width:1px;height:50px;background:linear-gradient(180deg,var(--violet),transparent);animation:sp 2.3s ease-in-out infinite;}
-@keyframes sp{0%,100%{opacity:.25;}55%{opacity:1;}}
-.hscroll-lbl{font-family:var(--mono);font-size:.43rem;letter-spacing:.36em;text-transform:uppercase;color:var(--dim);writing-mode:vertical-rl;}
-
-/* ── TICKER ──────────────────────── */
-.tkr{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:.82rem 0;background:rgba(6,8,16,.98);position:relative;z-index:2;}
-.tkr-t{display:flex;gap:3rem;width:max-content;animation:tkmv 32s linear infinite;}
-.tkr-i{display:flex;align-items:center;gap:.85rem;white-space:nowrap;font-family:var(--display);font-size:.6rem;font-weight:300;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
-.tkr-i .d{color:var(--acid);font-size:.5rem;}
-@keyframes tkmv{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-</style>
-
-<style>
-/* ── SECTION BASE ────────────────── */
-.sec{padding:11rem 4vw;position:relative;z-index:2;}
-.stag{
-  display:inline-flex;align-items:center;gap:.7rem;
-  font-family:var(--mono);font-size:.5rem;letter-spacing:.42em;
-  text-transform:uppercase;color:var(--acid);margin-bottom:1.2rem;
-}
-.stag::before{content:'';width:14px;height:1px;background:var(--acid);}
-.shead{
-  font-family:var(--display);
-  font-size:clamp(2.6rem,5.5vw,6.5rem);
-  font-weight:700;line-height:.88;
-  color:var(--snow);letter-spacing:-.04em;
-  margin-bottom:6rem;overflow:hidden;
-}
-.shead em{font-style:italic;font-family:var(--serif);font-weight:400;color:var(--acid);}
-.shead .out{-webkit-text-stroke:1px rgba(236,238,245,.18);color:transparent;}
-
-/* ── ABOUT ───────────────────────── */
-#about{background:rgba(6,8,16,.93);backdrop-filter:blur(10px);}
-.abt-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:9vw;align-items:start;}
-.abt-pull{
-  font-family:var(--serif);font-size:clamp(1.3rem,2.2vw,2rem);
-  font-style:italic;font-weight:400;line-height:1.55;
-  color:var(--silver);border-left:2px solid var(--acid);
-  padding-left:1.8rem;margin-bottom:2.8rem;
-}
-.abt-p{font-family:var(--mono);font-size:.78rem;line-height:2.05;color:var(--dim);font-weight:300;margin-bottom:1.1rem;}
-.abt-p strong{color:var(--silver);font-weight:400;}
-.chips{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:2rem;}
-.chip{
-  font-family:var(--mono);font-size:.46rem;letter-spacing:.14em;
-  text-transform:uppercase;padding:.32rem .8rem;
-  border:1px solid var(--line);color:var(--dim);cursor:none;
-  transition:border-color .3s,color .3s,background .3s;
-}
-.chip:hover{border-color:var(--acid);color:var(--acid);background:var(--acid-dim);}
-.tl-hd{font-family:var(--mono);font-size:.5rem;letter-spacing:.34em;text-transform:uppercase;color:var(--dim);margin-bottom:1.8rem;}
-.tl{display:flex;flex-direction:column;}
-.tli{display:grid;grid-template-columns:60px 1fr;gap:1.3rem;padding:1.5rem 0;border-bottom:1px solid var(--line);position:relative;overflow:hidden;}
-.tli::before{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--acid);transition:width .5s ease;}
-.tli:hover::before{width:100%;}
-.tli-yr{font-family:var(--mono);font-size:.48rem;letter-spacing:.12em;color:var(--muted);padding-top:.12rem;}
-.tli-role{font-family:var(--display);font-size:.7rem;font-weight:400;color:var(--snow);margin-bottom:.12rem;letter-spacing:-.01em;}
-.tli-co{font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;color:var(--dim);}
-
-/* ── NUMBERS ─────────────────────── */
-.numbar{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:5rem 4vw;position:relative;z-index:2;}
-.numgrid{display:grid;grid-template-columns:repeat(4,1fr);}
-.nc{padding:0 3vw;border-right:1px solid var(--line);}
-.nc:first-child{padding-left:0;}
-.nc:last-child{border-right:none;}
-.nc-n{font-family:var(--display);font-size:clamp(3rem,5vw,5.5rem);font-weight:900;line-height:1;color:var(--snow);margin-bottom:.35rem;letter-spacing:-.04em;}
-.nc-n em{color:var(--acid);font-size:60%;font-style:normal;font-weight:300;}
-.nc-l{font-family:var(--mono);font-size:.48rem;letter-spacing:.26em;color:var(--dim);text-transform:uppercase;margin-bottom:.35rem;}
-.nc-s{font-family:var(--serif);font-size:.8rem;font-style:italic;color:var(--muted);line-height:1.5;}
-
-/* ── WORK — horizontal scroll ────── */
-#work{padding:11rem 0;position:relative;z-index:2;background:rgba(6,8,16,.93);backdrop-filter:blur(6px);}
-#work .sec-head{padding:0 4vw;margin-bottom:4rem;}
-.wscroll-outer{overflow:hidden;position:relative;}
-.wscroll-track{
-  display:flex;gap:1px;
-  width:max-content;
-  padding:0 4vw;
-  cursor:none;
-}
-.wcard{
-  width:min(480px,85vw);flex-shrink:0;
-  background:var(--panel);border:1px solid var(--line);
-  padding:2.8rem;position:relative;overflow:hidden;
-  transition:background .35s;text-decoration:none;
-  display:flex;flex-direction:column;min-height:360px;
-}
-.wcard::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:linear-gradient(90deg,var(--acid),var(--violet));transition:width .5s ease;}
-.wcard:hover{background:#0f1220;}
-.wcard:hover::after{width:100%;}
-.wcard-n{font-family:var(--display);font-size:5rem;font-weight:900;color:rgba(184,255,92,.06);line-height:1;margin-bottom:1.5rem;letter-spacing:-.04em;transition:color .4s;}
-.wcard:hover .wcard-n{color:rgba(184,255,92,.14);}
-.wcard-cats{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;}
-.wcat{font-family:var(--mono);font-size:.44rem;letter-spacing:.14em;text-transform:uppercase;padding:.18rem .55rem;border:1px solid var(--line);color:var(--dim);transition:border-color .3s,color .3s;}
-.wcard:hover .wcat{border-color:rgba(184,255,92,.18);color:var(--mid);}
-.wcard-name{font-family:var(--display);font-size:clamp(1.4rem,2.4vw,2rem);font-weight:700;color:var(--snow);line-height:1.05;letter-spacing:-.03em;margin-bottom:.75rem;transition:color .35s;}
-.wcard:hover .wcard-name{color:var(--acid);}
-.wcard-desc{font-family:var(--serif);font-style:italic;font-size:.83rem;line-height:1.72;color:var(--dim);flex:1;}
-.wcard-foot{display:flex;align-items:center;justify-content:space-between;margin-top:2rem;padding-top:1.2rem;border-top:1px solid var(--line);}
-.wcard-arr{font-family:var(--mono);font-size:.46rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:.6rem;transition:color .35s,gap .35s;}
-.wcard:hover .wcard-arr{color:var(--acid);gap:1.1rem;}
-.warl{width:22px;height:1px;background:currentColor;position:relative;transition:width .35s;}
-.warl::after{content:'';position:absolute;right:0;top:-3px;width:5px;height:5px;border-right:1px solid;border-top:1px solid;transform:rotate(45deg);}
-.wcard:hover .warl{width:36px;}
-/* drag hint */
-.wdrag{padding:1.5rem 4vw 0;font-family:var(--mono);font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:.75rem;}
-.wdrag::before{content:'←';color:var(--acid);}
-.wdrag::after{content:'→';color:var(--acid);}
-
-/* ── EXPERTISE ───────────────────── */
-#expertise .expgrid{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  gap:1px;background:var(--line);border:1px solid var(--line);
-}
-.expc{background:var(--panel);padding:2.8rem 2.2rem;position:relative;overflow:hidden;transition:background .35s;cursor:none;}
-.expc::before{content:attr(data-n);position:absolute;right:.8rem;top:.5rem;font-family:var(--display);font-size:5rem;font-weight:900;color:rgba(184,255,92,.04);letter-spacing:-.04em;line-height:1;pointer-events:none;}
-.expc::after{content:'';position:absolute;top:0;left:0;width:0;height:1px;background:linear-gradient(90deg,var(--acid),transparent);transition:width .45s ease;}
-.expc:hover{background:#0f1220;}
-.expc:hover::after{width:100%;}
-.expc-ic{font-size:1.2rem;margin-bottom:1.4rem;opacity:.4;display:block;transition:opacity .3s;}
-.expc:hover .expc-ic{opacity:.8;}
-.expc-t{font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--silver);margin-bottom:.5rem;transition:color .3s;}
-.expc:hover .expc-t{color:var(--acid);}
-.expc-d{font-family:var(--mono);font-size:.74rem;line-height:1.8;color:var(--dim);font-weight:300;}
-
-/* ── QUOTE ───────────────────────── */
-.qband{
-  padding:8rem 4vw;background:var(--bg2);
-  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-  position:relative;z-index:2;overflow:hidden;
-}
-.qband::before{
-  content:'';position:absolute;left:0;right:0;top:0;bottom:0;
-  background:radial-gradient(ellipse at 50% 50%,rgba(184,255,92,.05) 0%,transparent 65%);
-  pointer-events:none;
-}
-.q-inner{position:relative;max-width:860px;margin:0 auto;text-align:center;}
-.q-mark{font-family:var(--display);font-size:6rem;font-weight:900;color:var(--acid);opacity:.2;line-height:.7;display:block;margin-bottom:1rem;}
-.qtxt{font-family:var(--serif);font-size:clamp(1.2rem,2.2vw,1.95rem);font-style:italic;font-weight:400;line-height:1.6;color:var(--silver);margin-bottom:2rem;}
-.qattr{font-family:var(--mono);font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);}
-.qattr em{color:var(--acid);font-style:normal;}
-
-/* ── PROCESS ─────────────────────── */
-.procgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);}
-.procc{background:var(--panel);padding:3.2rem 2.8rem;display:flex;gap:1.6rem;position:relative;overflow:hidden;transition:background .3s;cursor:none;}
-.procc:hover{background:#0f1220;}
-.procc::after{content:'';position:absolute;left:0;top:0;width:0;height:1px;background:var(--acid);transition:width .3s ease;}
-.procc:hover::after{width:100%;}
-.procc-nn{font-family:var(--display);font-size:4.5rem;color:rgba(184,255,92,.06);font-weight:900;line-height:1;flex-shrink:0;width:56px;transition:color .4s;letter-spacing:-.04em;}
-.procc:hover .procc-nn{color:rgba(184,255,92,.18);}
-.procc-t{font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--silver);margin-bottom:.6rem;transition:color .3s;}
-.procc:hover .procc-t{color:var(--acid);}
-.procc-p{font-family:var(--mono);font-size:.75rem;line-height:1.88;color:var(--dim);font-weight:300;}
-
-/* ── CONTACT ─────────────────────── */
-#contact{padding:11rem 4vw;background:rgba(6,8,16,.97);backdrop-filter:blur(12px);position:relative;z-index:2;text-align:center;}
-.ctbig{
-  font-family:var(--display);
-  font-size:clamp(3.5rem,9vw,11rem);
-  font-weight:900;line-height:.85;
-  color:var(--snow);letter-spacing:-.04em;
-  margin-bottom:1.8rem;overflow:hidden;
-}
-.ctbig em{font-style:italic;font-family:var(--serif);font-weight:400;color:var(--acid);}
-.ctsub{font-family:var(--serif);font-style:italic;font-size:1rem;color:var(--dim);margin-bottom:4rem;max-width:400px;margin-left:auto;margin-right:auto;}
-.ctdeets{display:flex;justify-content:center;gap:4rem;flex-wrap:wrap;margin-bottom:4.5rem;}
-.ctd{display:flex;flex-direction:column;gap:.35rem;align-items:center;}
-.ctd-l{font-family:var(--mono);font-size:.46rem;letter-spacing:.3em;text-transform:uppercase;color:var(--dim);}
-.ctd-v{font-family:var(--mono);font-size:.66rem;letter-spacing:.07em;color:var(--silver);text-decoration:none;transition:color .3s;}
-.ctd-v:hover{color:var(--acid);}
-/* form */
-.cfwrap{width:100%;max-width:620px;margin:0 auto 4.5rem;}
-.cfrow{display:grid;grid-template-columns:1fr 1fr;gap:1px;}
-.cff{display:flex;flex-direction:column;margin-bottom:1px;}
-.cfl{font-family:var(--mono);font-size:.46rem;letter-spacing:.26em;text-transform:uppercase;color:var(--dim);text-align:left;padding:.8rem 1rem .08rem;background:var(--bg3);}
-.cfi{background:var(--bg3);border:none;outline:none;border-bottom:1px solid var(--line);color:var(--snow);font-family:var(--mono);font-size:.78rem;padding:.6rem 1rem .9rem;width:100%;-webkit-appearance:none;transition:border-color .3s,background .3s;cursor:none;}
-.cfi:focus{border-color:rgba(184,255,92,.4);background:#111520;}
-.cfi::placeholder{color:var(--muted);}
-.cfta{resize:vertical;min-height:110px;line-height:1.7;}
-.cffooter{display:flex;align-items:center;gap:1.5rem;margin-top:1px;background:var(--bg3);padding:1.2rem 1rem;}
-.cfnote{font-family:var(--mono);font-size:.46rem;letter-spacing:.12em;color:var(--dim);font-style:italic;}
-.cfok{display:none;flex-direction:column;align-items:center;gap:.8rem;padding:4rem 2rem;background:var(--bg3);border:1px solid rgba(184,255,92,.12);}
-.cfok.show{display:flex;}
-#cform.gone{display:none;}
-.cfok-ic{font-size:1.8rem;color:var(--acid);opacity:.55;animation:spin 9s linear infinite;}
-@keyframes spin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
-.cfok-t{font-family:var(--display);font-size:2rem;font-weight:700;color:var(--snow);letter-spacing:-.03em;}
-.cfok-s{font-family:var(--mono);font-size:.52rem;letter-spacing:.18em;color:var(--dim);}
-.socrow{display:flex;justify-content:center;gap:2.2rem;flex-wrap:wrap;}
-.socrow a{font-family:var(--mono);font-size:.5rem;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);text-decoration:none;transition:color .3s;position:relative;}
-.socrow a::after{content:'';position:absolute;left:0;bottom:-3px;width:0;height:1px;background:var(--acid);transition:width .3s;}
-.socrow a:hover{color:var(--acid);}
-.socrow a:hover::after{width:100%;}
-
-/* ── FOOTER ──────────────────────── */
-footer{border-top:1px solid var(--line);background:var(--bg);padding:1.8rem 4vw;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;}
-.ftl,.ftr{font-family:var(--mono);font-size:.48rem;letter-spacing:.14em;color:var(--dim);}
-.ftr span{color:var(--acid);}
-.ftlogo{font-family:var(--display);font-size:.85rem;font-weight:700;color:var(--dim);letter-spacing:-.02em;}
-
-/* ── RESPONSIVE ──────────────────── */
-@media(max-width:1060px){
-  .sec{padding:7rem 4vw;}#about{padding:7rem 4vw;}#contact{padding:7rem 4vw;}
-  .abt-grid{grid-template-columns:1fr;gap:5rem;}
-  .numgrid{grid-template-columns:1fr 1fr;gap:2rem 0;}
-  .nc{border-right:none;border-bottom:1px solid var(--line);padding:0 0 2rem;}
-  #expertise .expgrid{grid-template-columns:1fr 1fr;}
-  .procgrid{grid-template-columns:1fr;}
-  .h-content{max-width:100%;}
-  .h-robot{width:46%;opacity:.7;}
-}
-@media(max-width:768px){
-  #hero{padding:0 4vw 4rem;}
-  .h-robot{width:100%;opacity:.18;position:absolute;top:0;}
-  .h-content{max-width:100%;}
-  .h-bottom{grid-template-columns:1fr;}
-  .vsoc{display:none;}
-  #expertise .expgrid{grid-template-columns:1fr;}
-  #nav .nlinks,.navail{display:none;}
-  .cfrow{grid-template-columns:1fr;}
-  footer{flex-direction:column;gap:.7rem;text-align:center;}
-}
-</style>
-
-<canvas id="bgc"></canvas>
-<div id="cdot"></div><div id="cring"></div>
-<div id="main">
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="curRing"></div>
+<div id="noise"></div>
+<div id="bg-canvas"></div>
 
 <!-- NAV -->
-<nav id="nav" style="opacity:0;transform:translateY(-55px);">
-  <a href="#" class="nlogo"><div class="nbadge">VB</div><span class="nname">Vedant Bahe</span></a>
-  <ul class="nlinks">
-    <li><a href="#about">About</a></li><li><a href="#work">Work</a></li>
-    <li><a href="#expertise">Expertise</a></li><li><a href="#process">Process</a></li>
+<nav id="nav">
+  <a href="#" class="nav-logo">Vedant <em>Bahe</em></a>
+  <ul class="nav-links">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <div class="navail"><span class="ndot"></span>Available for projects</div>
+  <a href="#contact" class="nav-cta">Let's Talk</a>
 </nav>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="h-ambient">VB</div>
-  <div class="h-robot">
-    <div class="h-robot-glow"></div>
-    <iframe src="https://my.spline.design/genkubgreetingrobot-QTsBjlsucDnel9duXOqNLYRD/" frameborder="0" allow="autoplay" style="width:100%;height:100%;border:none;"></iframe>
-  </div>
-  <div class="vsoc" style="opacity:0;">
-    <a href="#">Behance</a><a href="#">Dribbble</a><a href="#">LinkedIn</a><a href="#">GitHub</a>
-  </div>
-  <div class="h-content">
-    <div class="h-index" style="opacity:0;transform:translateY(20px);">
-      <span class="h-index-badge">Available</span>
-      UI/UX Designer &amp; Frontend Developer
+<div class="content">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-tag">Premium Web Design · Restaurant Specialist</div>
+    <h1 class="hero-name">Vedant<br><em>Bahe</em></h1>
+    <p class="hero-sub">Crafting cinematic digital experiences for restaurants &amp; luxury brands worldwide</p>
+    <div class="hero-btns">
+      <a href="#work" class="btn-g">View Work</a>
+      <a href="#contact" class="btn-o">Let's Connect</a>
     </div>
-    <h1 class="h-title">
-      <span class="line"><span class="line-i t-normal">Design</span></span>
-      <span class="line"><span class="line-i t-outline">that</span></span>
-      <span class="line"><span class="line-i t-acid">endures.</span></span>
-    </h1>
-    <div class="h-bottom" style="opacity:0;transform:translateY(22px);">
-      <p class="h-bio">UI/UX Designer &amp; Developer with a <strong>fresh perspective</strong> and obsessive attention to craft. I build digital experiences that feel intuitive, look extraordinary, and leave lasting impressions.</p>
-      <div class="h-right">
-        <div class="h-btns">
-          <a href="#work" class="btn-a mag"><span>View Work</span></a>
-          <a href="#contact" class="btn-b mag">Hire Me</a>
+    <div class="scroll-cue">
+      <span>Scroll</span>
+      <div class="scroll-bar"></div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ABOUT -->
+  <section class="about-section" id="about">
+    <div class="about-grid">
+      <div class="reveal">
+        <div class="sec-label">02 — About</div>
+        <h2 class="sec-title">Designing <em>Cravings,</em><br>Not Just Sites</h2>
+        <p>I specialize in <strong>premium digital experiences</strong> for restaurants, cafés &amp; luxury food brands. Every pixel is intentional — from the first load animation to the last hover state.</p>
+        <p>My work blends <strong>cinematic aesthetics</strong> with conversion-focused design. Clients see real results: higher reservations, stronger brand recognition, and experiences guests remember.</p>
+        <br>
+        <a href="#work" class="proj-link">See the work</a>
+      </div>
+      <div class="about-stats reveal" style="transition-delay:.15s">
+        <div class="stat">
+          <div class="stat-n">12<span style="font-size:2rem;color:var(--muted)">+</span></div>
+          <div class="stat-l">Projects Delivered</div>
         </div>
-        <div class="h-stats">
-          <div class="hst"><div class="hst-n">6<em>+</em></div><div class="hst-l">Projects</div></div>
-          <div class="hst"><div class="hst-n">100<em>%</em></div><div class="hst-l">Satisfaction</div></div>
-          <div class="hst"><div class="hst-n">∞</div><div class="hst-l">Passion</div></div>
+        <div class="stat">
+          <div class="stat-n">5<span style="font-size:1.6rem;color:var(--gold)">★</span></div>
+          <div class="stat-l">Client Rating</div>
+        </div>
+        <div class="stat">
+          <div class="stat-n">3<span style="font-size:2rem;color:var(--muted)">+</span></div>
+          <div class="stat-l">Years Experience</div>
+        </div>
+        <div class="stat">
+          <div class="stat-n" style="font-size:2.5rem">∞</div>
+          <div class="stat-l">Revisions Included</div>
         </div>
       </div>
     </div>
-  </div>
-  <a href="#" class="hresume" style="opacity:0;">Resume ↓</a>
-  <div class="hscroll" style="opacity:0;"><div class="hscroll-bar"></div><div class="hscroll-lbl">Scroll</div></div>
-</section>
+  </section>
 
-<!-- TICKER -->
-<div class="tkr">
-  <div class="tkr-t">
-    <span class="tkr-i">UI Design<span class="d">✦</span></span><span class="tkr-i">UX Strategy<span class="d">✦</span></span>
-    <span class="tkr-i">Design Systems<span class="d">✦</span></span><span class="tkr-i">Frontend Dev<span class="d">✦</span></span>
-    <span class="tkr-i">Motion Design<span class="d">✦</span></span><span class="tkr-i">Brand Identity<span class="d">✦</span></span>
-    <span class="tkr-i">3D &amp; WebGL<span class="d">✦</span></span><span class="tkr-i">Interaction Design<span class="d">✦</span></span>
-    <span class="tkr-i">UI Design<span class="d">✦</span></span><span class="tkr-i">UX Strategy<span class="d">✦</span></span>
-    <span class="tkr-i">Design Systems<span class="d">✦</span></span><span class="tkr-i">Frontend Dev<span class="d">✦</span></span>
-    <span class="tkr-i">Motion Design<span class="d">✦</span></span><span class="tkr-i">Brand Identity<span class="d">✦</span></span>
-    <span class="tkr-i">3D &amp; WebGL<span class="d">✦</span></span><span class="tkr-i">Interaction Design<span class="d">✦</span></span>
-  </div>
-</div>
+  <div class="sep"></div>
 
-<!-- ABOUT -->
-<section id="about" class="sec">
-  <div class="stag">The Designer</div>
-  <div class="abt-grid">
-    <div>
-      <blockquote class="abt-pull">"Every expert was once a beginner. I'm here to build great things — one pixel, one interaction, one project at a time."</blockquote>
-      <p class="abt-p">I'm a <strong>UI/UX Designer &amp; Frontend Developer</strong> who recently stepped into this field with a burning passion for creating digital experiences that genuinely move people. What I lack in years, I make up for in <strong>obsessive craft, curiosity, and speed of learning</strong>.</p>
-      <p class="abt-p">Every project gets my full attention — from hospitality brands to lifestyle products. I care deeply about the details that separate work that is good from work that feels <strong>truly unforgettable</strong>.</p>
-      <div class="chips">
-        <span class="chip">Figma</span><span class="chip">Three.js</span><span class="chip">React</span>
-        <span class="chip">Next.js</span><span class="chip">GSAP</span><span class="chip">Framer</span>
-        <span class="chip">Webflow</span><span class="chip">Spline</span><span class="chip">HTML/CSS</span><span class="chip">JavaScript</span>
+  <!-- PROJECTS -->
+  <div class="projects-wrap" id="work">
+    <div class="reveal">
+      <div class="sec-label">03 — Selected Work</div>
+      <h2 class="sec-title">Projects That <em>Elevate</em><br>Brands</h2>
+    </div>
+    <div class="proj-grid reveal" style="transition-delay:.15s">
+
+      <!-- Featured -->
+      <div class="proj-card wide" onclick="window.open('https://bistro-cafe-eight.vercel.app/','_blank')">
+        <div class="proj-img">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80" alt="Bistro Café Miami" loading="lazy">
+          <div class="proj-img-grad"></div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-chip">⭐ Featured · Miami, USA</div>
+          <div class="proj-title">Bistro Café Miami</div>
+          <div class="proj-desc">Cinematic preloader, 3D menu hover cards, testimonials carousel &amp; reservations form. A complete luxury dining experience online.</div>
+          <div class="proj-tags">
+            <span class="proj-tag">Luxury UI</span>
+            <span class="proj-tag">3D Cards</span>
+            <span class="proj-tag">Preloader</span>
+            <span class="proj-tag">4.9★</span>
+          </div>
+          <a href="https://bistro-cafe-eight.vercel.app/" target="_blank" onclick="event.stopPropagation()" class="proj-link">View Live</a>
+        </div>
+      </div>
+
+      <!-- Hair House -->
+      <div class="proj-card" onclick="window.open('https://hairhouseatxeta.vercel.app/','_blank')">
+        <div class="proj-img">
+          <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=900&q=80" alt="Hair House ATX" loading="lazy">
+          <div class="proj-img-grad"></div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-chip">Hair Salon · Austin, TX</div>
+          <div class="proj-title">Hair House ATX</div>
+          <div class="proj-desc">Luxury UI with booking system, team profiles &amp; before/after transformations.</div>
+          <div class="proj-tags"><span class="proj-tag">Luxury UI</span><span class="proj-tag">Booking</span></div>
+          <a href="https://hairhouseatxeta.vercel.app/" target="_blank" onclick="event.stopPropagation()" class="proj-link">View Live</a>
+        </div>
+      </div>
+
+      <!-- RedOak -->
+      <div class="proj-card" onclick="window.open('https://redoak-nu.vercel.app/','_blank')">
+        <div class="proj-img">
+          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=900&q=80" alt="RedOak Restaurant" loading="lazy">
+          <div class="proj-img-grad"></div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-chip">Restaurant · Balaghat, India</div>
+          <div class="proj-title">RedOak Restaurant</div>
+          <div class="proj-desc">Premium dining website with animated menu and integrated reservation system.</div>
+          <div class="proj-tags"><span class="proj-tag">Premium</span><span class="proj-tag">Animation</span></div>
+          <a href="https://redoak-nu.vercel.app/" target="_blank" onclick="event.stopPropagation()" class="proj-link">View Live</a>
+        </div>
+      </div>
+
+      <!-- Thunder Café -->
+      <div class="proj-card" onclick="window.open('https://thunder-cafe-7mr6.vercel.app/','_blank')">
+        <div class="proj-img">
+          <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=900&q=80" alt="Thunder Café" loading="lazy">
+          <div class="proj-img-grad"></div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-chip">Café · India</div>
+          <div class="proj-title">Thunder Café</div>
+          <div class="proj-desc">Bold café branding with energetic design language and a full digital menu.</div>
+          <div class="proj-tags"><span class="proj-tag">Bold UI</span><span class="proj-tag">Menu</span></div>
+          <a href="https://thunder-cafe-7mr6.vercel.app/" target="_blank" onclick="event.stopPropagation()" class="proj-link">View Live</a>
+        </div>
+      </div>
+
+      <!-- Whip My Soul -->
+      <div class="proj-card" onclick="window.open('https://whip-my-soul.vercel.app/','_blank')">
+        <div class="proj-img">
+          <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=900&q=80" alt="Whip My Soul" loading="lazy">
+          <div class="proj-img-grad"></div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-chip">Desserts · India</div>
+          <div class="proj-title">Whip My Soul</div>
+          <div class="proj-desc">Playful yet premium dessert brand with immersive visual storytelling.</div>
+          <div class="proj-tags"><span class="proj-tag">Brand</span><span class="proj-tag">Visual</span></div>
+          <a href="https://whip-my-soul.vercel.app/" target="_blank" onclick="event.stopPropagation()" class="proj-link">View Live</a>
+        </div>
+      </div>
+
+      <!-- Chocolate Story -->
+      <div class="proj-card" onclick="window.open('https://chocolate-story.vercel.app/','_blank')">
+        <div class="proj-img">
+          <img src="https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=900&q=80" alt="Chocolate Story" loading="lazy">
+          <div class="proj-img-grad"></div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-chip">Chocolate · India</div>
+          <div class="proj-title">Chocolate Story</div>
+          <div class="proj-desc">Rich brand identity and e-commerce experience for artisan chocolates.</div>
+          <div class="proj-tags"><span class="proj-tag">E-commerce</span><span class="proj-tag">Luxury</span></div>
+          <a href="https://chocolate-story.vercel.app/" target="_blank" onclick="event.stopPropagation()" class="proj-link">View Live</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="sep"></div>
+
+  <!-- SKILLS -->
+  <section class="skills-section" id="skills">
+    <div class="skills-inner">
+      <div class="reveal">
+        <div class="sec-label">04 — Expertise</div>
+        <h2 class="sec-title">Tools of<br>the <em>Craft</em></h2>
+      </div>
+      <div class="skills-grid reveal" style="transition-delay:.15s">
+        <div class="skill"><div class="skill-n">01</div><div class="skill-name">UI / UX Design</div></div>
+        <div class="skill"><div class="skill-n">02</div><div class="skill-name">Three.js / WebGL</div></div>
+        <div class="skill"><div class="skill-n">03</div><div class="skill-name">GSAP Animation</div></div>
+        <div class="skill"><div class="skill-n">04</div><div class="skill-name">HTML · CSS · JS</div></div>
+        <div class="skill"><div class="skill-n">05</div><div class="skill-name">Responsive Design</div></div>
+        <div class="skill"><div class="skill-n">06</div><div class="skill-name">Performance &amp; SEO</div></div>
+        <div class="skill"><div class="skill-n">07</div><div class="skill-name">Brand Identity</div></div>
+        <div class="skill"><div class="skill-n">08</div><div class="skill-name">Figma · Prototyping</div></div>
       </div>
     </div>
-    <div>
-      <div class="tl-hd">Journey So Far</div>
-      <div class="tl">
-        <div class="tli"><div class="tli-yr">2024–Now</div><div><div class="tli-role">UI/UX Designer &amp; Developer</div><div class="tli-co">Freelance · Independent</div></div></div>
-        <div class="tli"><div class="tli-yr">2024</div><div><div class="tli-role">Entered the Field</div><div class="tli-co">Self-taught · Passion-driven</div></div></div>
-        <div class="tli"><div class="tli-yr">2023</div><div><div class="tli-role">Started Learning Design &amp; Code</div><div class="tli-co">Figma · HTML · CSS · JS</div></div></div>
-      </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-section reveal">
+      <div class="sec-label">05 — Let's Work</div>
+      <h2 class="contact-lead">
+        Ready to create something <em>extraordinary</em> together?
+      </h2>
+      <a href="mailto:vedbahe@gmail.com" class="contact-email">vedbahe@gmail.com</a>
+      <ul class="socials">
+        <li><a href="#" target="_blank">Instagram</a></li>
+        <li><a href="#" target="_blank">LinkedIn</a></li>
+        <li><a href="#" target="_blank">Behance</a></li>
+        <li><a href="#" target="_blank">GitHub</a></li>
+      </ul>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- NUMBERS -->
-<div class="numbar">
-  <div class="numgrid">
-    <div class="nc"><div class="nc-n">6<em>+</em></div><div class="nc-l">Live Projects</div><div class="nc-s">Real clients, real results</div></div>
-    <div class="nc"><div class="nc-n">1<em>yr</em></div><div class="nc-l">In The Field</div><div class="nc-s">Fresh perspective, zero bad habits</div></div>
-    <div class="nc"><div class="nc-n">100<em>%</em></div><div class="nc-l">Satisfaction</div><div class="nc-s">Every project delivered with pride</div></div>
-    <div class="nc"><div class="nc-n">∞</div><div class="nc-l">Passion</div><div class="nc-s">Always learning, always improving</div></div>
-  </div>
-</div>
+  <!-- FOOTER -->
+  <footer>
+    <div class="foot-copy">© 2025 Vedant Bahe — All rights reserved</div>
+    <div class="foot-note">Premium Web Design · Restaurant Specialist</div>
+  </footer>
 
-<!-- WORK — horizontal scroll -->
-<section id="work">
-  <div class="sec-head" style="padding:0 4vw;margin-bottom:4rem;">
-    <div class="stag">Selected Work</div>
-    <h2 class="shead">Case <em>Studies</em></h2>
-  </div>
-  <div class="wscroll-outer">
-    <div class="wscroll-track" id="wtrack">
-      <a href="https://hairhouseatxeta.vercel.app/" target="_blank" class="wcard">
-        <div class="wcard-n">01</div><div class="wcard-cats"><span class="wcat">Beauty</span><span class="wcat">E-Commerce</span><span class="wcat">Booking</span></div>
-        <div class="wcard-name">Hairhouse at Xeta</div>
-        <div class="wcard-desc">Luxury hair salon rebuilt from scratch — cinematic transitions, seamless booking architecture, premium visual language.</div>
-        <div class="wcard-foot"><span></span><div class="wcard-arr">Open<span class="warl"></span></div></div>
-      </a>
-      <a href="https://bistro-cafe-eight.vercel.app/" target="_blank" class="wcard">
-        <div class="wcard-n">02</div><div class="wcard-cats"><span class="wcat">Hospitality</span><span class="wcat">Editorial UI</span></div>
-        <div class="wcard-name">Bistro Café</div>
-        <div class="wcard-desc">Warm editorial restaurant interface with immersive menu showcase and conversion-optimised reservation flow.</div>
-        <div class="wcard-foot"><span></span><div class="wcard-arr">Open<span class="warl"></span></div></div>
-      </a>
-      <a href="https://thunder-cafe-7mr6.vercel.app/" target="_blank" class="wcard">
-        <div class="wcard-n">03</div><div class="wcard-cats"><span class="wcat">F&amp;B</span><span class="wcat">Dark UI</span><span class="wcat">Brand</span></div>
-        <div class="wcard-name">Thunder Café</div>
-        <div class="wcard-desc">Storm-inspired visual system. Bold typographic hierarchy meets electrifying dark-mode brand identity.</div>
-        <div class="wcard-foot"><span></span><div class="wcard-arr">Open<span class="warl"></span></div></div>
-      </a>
-      <a href="https://redoak-nu.vercel.app/" target="_blank" class="wcard">
-        <div class="wcard-n">04</div><div class="wcard-cats"><span class="wcat">Fine Dining</span><span class="wcat">Premium</span></div>
-        <div class="wcard-name">Red Oak</div>
-        <div class="wcard-desc">Refined dining experience. Sophisticated layouts, integrated photography, seamless reservation architecture.</div>
-        <div class="wcard-foot"><span></span><div class="wcard-arr">Open<span class="warl"></span></div></div>
-      </a>
-      <a href="https://whip-my-soul.vercel.app/" target="_blank" class="wcard">
-        <div class="wcard-n">05</div><div class="wcard-cats"><span class="wcat">Lifestyle</span><span class="wcat">Storytelling</span></div>
-        <div class="wcard-name">Whip My Soul</div>
-        <div class="wcard-desc">Soul-driven lifestyle brand with expressive layout language and scroll-driven narrative experience.</div>
-        <div class="wcard-foot"><span></span><div class="wcard-arr">Open<span class="warl"></span></div></div>
-      </a>
-      <a href="https://chocolate-story.vercel.app/" target="_blank" class="wcard">
-        <div class="wcard-n">06</div><div class="wcard-cats"><span class="wcat">Luxury FMCG</span><span class="wcat">Sensory UX</span></div>
-        <div class="wcard-name">Chocolate Story</div>
-        <div class="wcard-desc">Indulgent brand experience for premium confectionery. Lush visuals, velvety micro-interactions, aspirational presentation.</div>
-        <div class="wcard-foot"><span></span><div class="wcard-arr">Open<span class="warl"></span></div></div>
-      </a>
-    </div>
-  </div>
-  <div class="wdrag">Drag to explore all projects</div>
-</section>
-
-<!-- EXPERTISE -->
-<section id="expertise" class="sec" style="background:rgba(6,8,16,.95);backdrop-filter:blur(8px);">
-  <div class="stag">Capabilities</div>
-  <h2 class="shead">What I <em>Master</em></h2>
-  <div class="expgrid">
-    <div class="expc" data-n="1"><span class="expc-ic">◈</span><div class="expc-t">UI Design &amp; Systems</div><div class="expc-d">Figma-native design systems, component libraries and brand-consistent interfaces that scale beautifully.</div></div>
-    <div class="expc" data-n="2"><span class="expc-ic">◉</span><div class="expc-t">UX Strategy</div><div class="expc-d">User flows, journey mapping and usability thinking that ground every design decision in evidence.</div></div>
-    <div class="expc" data-n="3"><span class="expc-ic">⬡</span><div class="expc-t">Frontend Development</div><div class="expc-d">Production-grade HTML, CSS, JavaScript, React and Next.js — bridging design vision and engineering.</div></div>
-    <div class="expc" data-n="4"><span class="expc-ic">◎</span><div class="expc-t">Motion &amp; Interaction</div><div class="expc-d">GSAP, Framer Motion and CSS animations that guide and delight — never distract or bloat.</div></div>
-    <div class="expc" data-n="5"><span class="expc-ic">⬟</span><div class="expc-t">3D &amp; WebGL</div><div class="expc-d">Three.js, Spline and immersive experiences that place your brand in a category of one.</div></div>
-    <div class="expc" data-n="6"><span class="expc-ic">◇</span><div class="expc-t">Brand Identity</div><div class="expc-d">Visual identity, typography and colour strategy for brands that need to own a room.</div></div>
-  </div>
-</section>
-
-<!-- QUOTE -->
-<div class="qband">
-  <div class="q-inner">
-    <span class="q-mark">❝</span>
-    <p class="qtxt">Vedant is the kind of designer who goes above and beyond on every project. His attention to detail, clean code, and creative instinct are remarkable — especially for someone so early in their journey.</p>
-    <div class="qattr">— Client, <em>Freelance Project</em></div>
-  </div>
-</div>
-
-<!-- PROCESS -->
-<section id="process" class="sec" style="background:rgba(6,8,16,.94);backdrop-filter:blur(8px);">
-  <div class="stag">How I Work</div>
-  <h2 class="shead">The <em>Process</em></h2>
-  <div class="procgrid">
-    <div class="procc"><div class="procc-nn">01</div><div><div class="procc-t">Discover &amp; Define</div><p class="procc-p">Deep immersion in your brand, audience and goals. I build shared understanding before a single pixel is placed — because the brief is the foundation.</p></div></div>
-    <div class="procc"><div class="procc-nn">02</div><div><div class="procc-t">Strategy &amp; Architecture</div><p class="procc-p">Information architecture, user flows and creative direction translated into a clear shared vision that guides every decision.</p></div></div>
-    <div class="procc"><div class="procc-nn">03</div><div><div class="procc-t">Design &amp; Prototype</div><p class="procc-p">High-fidelity design with interactive prototypes. Rapid iteration with obsessive commitment to craft and detail.</p></div></div>
-    <div class="procc"><div class="procc-nn">04</div><div><div class="procc-t">Build &amp; Deliver</div><p class="procc-p">Pixel-perfect frontend implementation, comprehensive handoff and post-launch support as your product evolves.</p></div></div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <div class="stag" style="display:inline-flex;justify-content:center;width:100%;">Let's Create Together</div>
-  <h2 class="ctbig">Start a<br><em>Conversation.</em></h2>
-  <p class="ctsub">Exceptional work begins with a single message.</p>
-  <div class="ctdeets">
-    <div class="ctd"><span class="ctd-l">Email</span><a id="em-lnk" href="#" class="ctd-v">—</a></div>
-    <div class="ctd"><span class="ctd-l">Phone</span><a href="tel:+919993498363" class="ctd-v">+91 99934 98363</a></div>
-    <div class="ctd"><span class="ctd-l">Based in</span><span class="ctd-v">India · Available Worldwide</span></div>
-  </div>
-  <div class="cfwrap">
-    <form id="cform" action="https://formspree.io/f/mdawkoav" method="POST">
-      <div class="cfrow">
-        <div class="cff"><label class="cfl" for="cfn">Your Name</label><input class="cfi" id="cfn" type="text" name="name" placeholder="John Smith" required/></div>
-        <div class="cff"><label class="cfl" for="cfe">Email</label><input class="cfi" id="cfe" type="email" name="email" placeholder="john@company.com" required/></div>
-      </div>
-      <div class="cff"><label class="cfl" for="cfs">Subject</label><input class="cfi" id="cfs" type="text" name="subject" placeholder="Project Inquiry…"/></div>
-      <div class="cff"><label class="cfl" for="cfm">Message</label><textarea class="cfi cfta" id="cfm" name="message" rows="5" placeholder="Tell me about your project…" required></textarea></div>
-      <div class="cffooter">
-        <button type="submit" class="btn-a mag" style="cursor:none;border:none;"><span id="cfbtxt">Send Message</span></button>
-        <div class="cfnote">Replies within 24 hours.</div>
-      </div>
-    </form>
-    <div class="cfok" id="cfok"><div class="cfok-ic">✦</div><div class="cfok-t">Message Sent.</div><div class="cfok-s">Thank you — I'll be in touch shortly.</div></div>
-  </div>
-  <div class="socrow">
-    <a href="#">Behance</a><a href="#">Dribbble</a><a href="#">LinkedIn</a><a href="#">GitHub</a><a href="#">Twitter / X</a>
-  </div>
-</section>
-
-<footer>
-  <div class="ftl">© 2025 Vedant Bahe. All rights reserved.</div>
-  <div class="ftlogo">VB</div>
-  <div class="ftr">Designed &amp; Developed by <span>Vedant Bahe</span></div>
-</footer>
-</div>
+</div><!-- end .content -->
 
 <script>
-gsap.registerPlugin(ScrollTrigger);
+/* ─────────────────────────────────────────
+   THREE.JS SCENE
+───────────────────────────────────────── */
+const scene   = new THREE.Scene();
+const camera  = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 1000);
+camera.position.z = 36;
 
-/* EMAIL */
-(function(){
-  var e=['baheved','@','gmail','.','com'].join('');
-  var el=document.getElementById('em-lnk');
-  if(el){el.href='mailto:'+e;el.textContent=e;}
-})();
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setClearColor(0x000000, 0);
+document.getElementById('bg-canvas').appendChild(renderer.domElement);
 
-/* CURSOR */
-var dot=document.getElementById('cdot'),ring=document.getElementById('cring');
-var mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
-document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
-(function loop(){
-  rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
-  dot.style.left=mx+'px';dot.style.top=my+'px';
-  ring.style.left=rx+'px';ring.style.top=ry+'px';
-  requestAnimationFrame(loop);
-})();
-document.querySelectorAll('a,button,.chip,.expc,.procc,.tli,.wcard').forEach(function(el){
-  el.addEventListener('mouseenter',function(){document.body.classList.add('hov');});
-  el.addEventListener('mouseleave',function(){document.body.classList.remove('hov');});
-});
+/* PARTICLES */
+const COUNT = 2800;
+const pos   = new Float32Array(COUNT * 3);
+const col   = new Float32Array(COUNT * 3);
 
-/* MAGNETIC */
-document.querySelectorAll('.mag').forEach(function(btn){
-  btn.addEventListener('mousemove',function(e){
-    var r=btn.getBoundingClientRect();
-    gsap.to(btn,{x:(e.clientX-r.left-r.width/2)*.38,y:(e.clientY-r.top-r.height/2)*.38,duration:.4,ease:'power2.out'});
-  });
-  btn.addEventListener('mouseleave',function(){
-    gsap.to(btn,{x:0,y:0,duration:.75,ease:'elastic.out(1,.4)'});
-  });
-});
-
-/* HORIZONTAL DRAG SCROLL */
-(function(){
-  var track=document.getElementById('wtrack');
-  if(!track) return;
-  var isDragging=false,startX=0,scrollLeft=0;
-  track.addEventListener('mousedown',function(e){
-    isDragging=true;startX=e.pageX-track.offsetLeft;
-    scrollLeft=track.parentElement.scrollLeft;
-    track.style.cursor='grabbing';
-  });
-  document.addEventListener('mousemove',function(e){
-    if(!isDragging) return;
-    e.preventDefault();
-    var x=e.pageX-track.offsetLeft;
-    track.parentElement.scrollLeft=scrollLeft-(x-startX)*1.2;
-  });
-  document.addEventListener('mouseup',function(){isDragging=false;track.style.cursor='none';});
-  /* gsap scroll animate cards */
-  gsap.from('.wcard',{x:80,opacity:0,duration:.9,stagger:.08,ease:'power2.out',
-    scrollTrigger:{trigger:'#work',start:'top 88%'}});
-})();
-
-/* HERO ENTRANCE */
-window.addEventListener('DOMContentLoaded',function(){
-  var tl=gsap.timeline({defaults:{ease:'power4.out'}});
-  tl.to('#nav',{y:0,opacity:1,duration:.9},'0');
-  tl.to('.h-index',{y:0,opacity:1,duration:.8},'.25');
-  tl.to('.line-i',{y:'0%',duration:1.3,stagger:.14},'0.3');
-  tl.to('.h-bottom',{y:0,opacity:1,duration:.9},'1.05');
-  tl.to('.vsoc',{opacity:1,duration:.8},'1.3');
-  tl.to('.hresume',{opacity:1,duration:.7},'1.4');
-  tl.to('.hscroll',{opacity:1,duration:.7},'1.45');
-  initBG();
-});
-
-/* SCROLL ANIMS */
-gsap.utils.toArray('.stag,.shead,.tl-hd,.abt-pull,.qtxt,.qattr,.q-mark').forEach(function(el){
-  gsap.from(el,{y:55,opacity:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%'}});
-});
-gsap.utils.toArray('.abt-p').forEach(function(el,i){
-  gsap.from(el,{y:30,opacity:0,duration:.9,delay:i*.1,ease:'power2.out',scrollTrigger:{trigger:el,start:'top 88%'}});
-});
-gsap.utils.toArray('.chips').forEach(function(w){
-  gsap.from(w.querySelectorAll('.chip'),{y:18,opacity:0,duration:.6,stagger:.04,ease:'power2.out',scrollTrigger:{trigger:w,start:'top 88%'}});
-});
-gsap.utils.toArray('.tli').forEach(function(el,i){
-  gsap.from(el,{x:30,opacity:0,duration:.8,delay:i*.1,ease:'power2.out',scrollTrigger:{trigger:el,start:'top 90%'}});
-});
-gsap.utils.toArray('.nc').forEach(function(el,i){
-  gsap.from(el,{y:55,opacity:0,duration:1,delay:i*.1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 85%'}});
-});
-gsap.utils.toArray('.expc').forEach(function(el,i){
-  gsap.from(el,{y:48,opacity:0,duration:.8,delay:i*.055,ease:'power2.out',scrollTrigger:{trigger:el,start:'top 88%'}});
-});
-gsap.utils.toArray('.procc').forEach(function(el,i){
-  gsap.from(el,{y:42,opacity:0,duration:.8,delay:i*.08,ease:'power2.out',scrollTrigger:{trigger:el,start:'top 88%'}});
-});
-gsap.from('.ctbig',{y:90,opacity:0,duration:1.2,ease:'power3.out',scrollTrigger:{trigger:'#contact',start:'top 82%'}});
-gsap.from('.ctsub',{y:28,opacity:0,duration:.9,delay:.15,ease:'power2.out',scrollTrigger:{trigger:'.ctsub',start:'top 88%'}});
-gsap.from('.ctdeets',{y:28,opacity:0,duration:.9,delay:.2,ease:'power2.out',scrollTrigger:{trigger:'.ctdeets',start:'top 88%'}});
-gsap.from('.cfwrap',{y:38,opacity:0,duration:.9,ease:'power2.out',scrollTrigger:{trigger:'.cfwrap',start:'top 88%'}});
-
-/* THREE.JS BG — amber-tinted hex + violet rings */
-function initBG(){
-  if(typeof THREE==='undefined') return;
-  var canvas=document.getElementById('bgc');
-  var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-  renderer.setSize(window.innerWidth,window.innerHeight);
-  renderer.setClearColor(0x000000,0);
-  var scene=new THREE.Scene();
-  var camera=new THREE.PerspectiveCamera(50,window.innerWidth/window.innerHeight,.1,600);
-  camera.position.set(0,14,32);camera.lookAt(0,0,0);
-  scene.fog=new THREE.FogExp2(0x060810,0.015);
-  /* hex grid — acid green tint */
-  var hg=new THREE.Group(),hr=1.4;
-  for(var row=-9;row<9;row++){
-    for(var col=-11;col<11;col++){
-      var x=col*hr*1.73+(row%2)*hr*.865,z=row*hr*1.5;
-      var d=Math.sqrt(x*x+z*z),op=Math.max(0,.22-d*.0075);
-      if(op<.005) continue;
-      var sh=new THREE.Shape();
-      for(var i=0;i<6;i++){var a=(Math.PI/3)*i-Math.PI/6;i===0?sh.moveTo(Math.cos(a)*hr*.9,Math.sin(a)*hr*.9):sh.lineTo(Math.cos(a)*hr*.9,Math.sin(a)*hr*.9);}
-      sh.closePath();
-      var pts=sh.getPoints(),geo=new THREE.BufferGeometry().setFromPoints(pts.concat(pts[0]));
-      var fd=Math.max(0,1-d/26);
-      var mat=new THREE.LineBasicMaterial({color:new THREE.Color(fd*.45,fd*.62,0),transparent:true,opacity:op*2});
-      var ln=new THREE.Line(geo,mat);
-      ln.position.set(x,-8,z);ln.rotation.x=-Math.PI/2.2;hg.add(ln);
-    }
+for (let i = 0; i < COUNT; i++) {
+  const i3 = i * 3;
+  pos[i3]   = (Math.random() - .5) * 130;
+  pos[i3+1] = (Math.random() - .5) * 90;
+  pos[i3+2] = (Math.random() - .5) * 70;
+  if (Math.random() > .55) {
+    col[i3]=201/255; col[i3+1]=169/255; col[i3+2]=110/255; // gold
+  } else {
+    const v = .6 + Math.random()*.4;
+    col[i3] = col[i3+1] = col[i3+2] = v; // white
   }
-  scene.add(hg);
-  function mkR(r,tube,col,op){var m=new THREE.Mesh(new THREE.TorusGeometry(r,tube,8,90),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:op}));m.rotation.x=Math.PI/2;m.position.y=-7;scene.add(m);return m;}
-  var r1=mkR(7,.05,0xb8ff5c,.065),r2=mkR(12,.03,0x8b5cf6,.045),r3=mkR(17,.02,0x4f7cff,.025),rg=mkR(9.5,.02,0x8b5cf6,.032);
-  var cone=new THREE.Mesh(new THREE.CylinderGeometry(.04,2.6,18,32,1,true),new THREE.MeshBasicMaterial({color:0xb8ff5c,transparent:true,opacity:.02,side:THREE.DoubleSide}));
-  scene.add(cone);
-  /* particles — acid + violet + dark */
-  var PC=900,pGeo=new THREE.BufferGeometry();
-  var pP=new Float32Array(PC*3),pC=new Float32Array(PC*3),pB=new Float32Array(PC*3);
-  for(var i=0;i<PC;i++){
-    var px=(Math.random()-.5)*80,py=Math.random()*30-8,pz=(Math.random()-.5)*80;
-    pP[i*3]=px;pP[i*3+1]=py;pP[i*3+2]=pz;pB[i*3]=px;pB[i*3+1]=py;pB[i*3+2]=pz;
-    var t=Math.random();
-    if(t<.38){pC[i*3]=.62;pC[i*3+1]=.88;pC[i*3+2]=.26;}
-    else if(t<.58){pC[i*3]=.48;pC[i*3+1]=.32;pC[i*3+2]=.88;}
-    else{pC[i*3]=.04;pC[i*3+1]=.05;pC[i*3+2]=.1;}
-  }
-  pGeo.setAttribute('position',new THREE.BufferAttribute(pP,3));
-  pGeo.setAttribute('color',new THREE.BufferAttribute(pC,3));
-  var pts3d=new THREE.Points(pGeo,new THREE.PointsMaterial({size:.05,vertexColors:true,transparent:true,opacity:.42,sizeAttenuation:true,depthWrite:false}));
-  scene.add(pts3d);
-  var ms={x:0,y:0},ct={x:0,y:0},sy=0;
-  document.addEventListener('mousemove',function(e){ms.x=(e.clientX/window.innerWidth-.5)*2;ms.y=(e.clientY/window.innerHeight-.5)*2;});
-  window.addEventListener('scroll',function(){sy=window.scrollY;});
-  window.addEventListener('resize',function(){camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);});
-  var tt=0;
-  (function animate(){
-    requestAnimationFrame(animate);tt+=.005;
-    ct.x+=(ms.x*3.5-ct.x)*.022;ct.y+=(-ms.y*1.5-ct.y)*.022;
-    camera.position.x=ct.x;camera.position.y=14+ct.y-sy*.0035;camera.position.z=32+sy*.005;
-    camera.lookAt(ct.x*.2,0,0);
-    var pulse=(Math.sin(tt*1.1)+1)*.5;
-    r1.material.opacity=.04+pulse*.07;r2.material.opacity=.025+pulse*.035;rg.material.opacity=.02+pulse*.028;
-    r1.rotation.z=tt*.11;r2.rotation.z=-tt*.07;rg.rotation.z=tt*.044;
-    cone.material.opacity=.012+pulse*.024;hg.rotation.y=tt*.016;
-    var pp=pGeo.attributes.position;
-    for(var i=0;i<PC;i++){pp.setY(i,pB[i*3+1]+Math.sin(tt*.5+i*.36)*.85);pp.setX(i,pB[i*3]+Math.cos(tt*.28+i*.27)*.22);}
-    pp.needsUpdate=true;
-    renderer.render(scene,camera);
-  })();
-  canvas.classList.add('on');
 }
 
-/* FORM */
-(function(){
-  var form=document.getElementById('cform');
-  var ok=document.getElementById('cfok');
-  var btxt=document.getElementById('cfbtxt');
-  if(!form) return;
-  form.addEventListener('submit',function(e){
-    e.preventDefault();btxt.textContent='Sending\u2026';
-    fetch('https://formspree.io/f/mdawkoav',{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}})
-    .then(function(r){if(r.ok){form.classList.add('gone');ok.classList.add('show');}else{btxt.textContent='Try Again';}})
-    .catch(function(){btxt.textContent='Try Again';});
-  });
+const pGeo = new THREE.BufferGeometry();
+pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+pGeo.setAttribute('color',    new THREE.BufferAttribute(col, 3));
+
+const pMat = new THREE.PointsMaterial({
+  size: .16, vertexColors: true,
+  transparent: true, opacity: .52, sizeAttenuation: true
+});
+scene.add(new THREE.Points(pGeo, pMat));
+
+/* WIREFRAME HELPER */
+function wire(geo, hex, alpha, x, y, z, s) {
+  const m = new THREE.LineSegments(
+    new THREE.EdgesGeometry(geo),
+    new THREE.LineBasicMaterial({ color: hex, transparent: true, opacity: alpha })
+  );
+  m.position.set(x, y, z);
+  if (s) m.scale.setScalar(s);
+  scene.add(m);
+  return m;
+}
+
+const shapes = {
+  ico1: wire(new THREE.IcosahedronGeometry(7, 0),  0xc9a96e, .16,  14, -5, -10, 1),
+  ico2: wire(new THREE.IcosahedronGeometry(3, 0),  0xc9a96e, .24, -17, 10,  -6, 1),
+  ico3: wire(new THREE.IcosahedronGeometry(2, 0),  0xffffff, .12,   4, 16, -14, 1),
+  tor1: wire(new THREE.TorusGeometry(9, .55, 6,24), 0xffffff, .06, -12, -7, -22, 1),
+  tor2: wire(new THREE.TorusGeometry(4, .3,  6,18), 0xc9a96e, .14,  18, 12,  -8, 1),
+  oct1: wire(new THREE.OctahedronGeometry(5, 0),   0xc9a96e, .18,   6, 14, -12, 1),
+  oct2: wire(new THREE.OctahedronGeometry(2.5, 0), 0xffffff, .14,  -5,-15,  -5, 1),
+};
+
+/* SHARED MOUSE STATE */
+let mx = 0, my = 0; // normalized -1..1 for Three.js
+let rx = 0, ry = 0; // raw px for cursor ring
+let cx = 0, cy = 0; // smoothed camera offset
+let ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', e => {
+  rx = e.clientX; ry = e.clientY;
+  mx = (e.clientX / innerWidth  - .5) * 2;
+  my = (e.clientY / innerHeight - .5) * 2;
+  document.getElementById('cur').style.left = e.clientX + 'px';
+  document.getElementById('cur').style.top  = e.clientY + 'px';
+});
+
+/* ANIMATION LOOP */
+let t = 0;
+(function loop() {
+  requestAnimationFrame(loop);
+  t += .005;
+
+  /* cursor ring smooth */
+  ringX += (rx - ringX) * .11;
+  ringY += (ry - ringY) * .11;
+  const cr = document.getElementById('curRing');
+  cr.style.left = ringX + 'px';
+  cr.style.top  = ringY + 'px';
+
+  /* camera parallax */
+  cx += (mx * 4.5 - cx) * .04;
+  cy += (-my * 2.5 - cy) * .04;
+  camera.position.x = cx;
+  camera.position.y = cy;
+  camera.lookAt(0, 0, 0);
+
+  /* rotate shapes */
+  shapes.ico1.rotation.x = t*.35; shapes.ico1.rotation.y = t*.28;
+  shapes.ico2.rotation.y = t*.4;  shapes.ico2.rotation.z = t*.22;
+  shapes.ico3.rotation.x = t*.5;  shapes.ico3.rotation.z = t*.38;
+  shapes.tor1.rotation.x = t*.18; shapes.tor1.rotation.z = t*.12;
+  shapes.tor2.rotation.y = t*.3;  shapes.tor2.rotation.x = t*.22;
+  shapes.oct1.rotation.y = t*.45; shapes.oct1.rotation.x = t*.2;
+  shapes.oct2.rotation.z = t*.55; shapes.oct2.rotation.y = t*.35;
+
+  /* gentle particle drift */
+  scene.children[0].rotation.y = t * .04;
+  scene.children[0].rotation.x = t * .025;
+
+  renderer.render(scene, camera);
 })();
+
+/* RESIZE */
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+/* ─────────────────────────────────────────
+   CURSOR HOVER SCALE
+───────────────────────────────────────── */
+const curEl = document.getElementById('cur');
+const crEl  = document.getElementById('curRing');
+
+document.querySelectorAll('a,button,.proj-card,.skill,.stat,.btn-g,.btn-o').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    curEl.style.transform  = 'translate(-50%,-50%) scale(2.5)';
+    crEl.style.transform   = 'translate(-50%,-50%) scale(1.6)';
+    crEl.style.opacity     = '.75';
+    crEl.style.borderColor = 'rgba(201,169,110,.8)';
+  });
+  el.addEventListener('mouseleave', () => {
+    curEl.style.transform  = 'translate(-50%,-50%) scale(1)';
+    crEl.style.transform   = 'translate(-50%,-50%) scale(1)';
+    crEl.style.opacity     = '.45';
+    crEl.style.borderColor = 'var(--gold)';
+  });
+});
+
+/* ─────────────────────────────────────────
+   NAV SCROLL EFFECT
+───────────────────────────────────────── */
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', scrollY > 80);
+});
+
+/* ─────────────────────────────────────────
+   SCROLL REVEAL
+───────────────────────────────────────── */
+const io = new IntersectionObserver(
+  entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on') }),
+  { threshold: .08, rootMargin: '0px 0px -60px 0px' }
+);
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* ─────────────────────────────────────────
+   3D TILT ON PROJECT CARDS
+───────────────────────────────────────── */
+document.querySelectorAll('.proj-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r  = card.getBoundingClientRect();
+    const rx = ((e.clientX - r.left) / r.width  - .5) * 2;
+    const ry = ((e.clientY - r.top)  / r.height - .5) * 2;
+    card.style.transition = 'transform .08s ease,border-color .4s';
+    card.style.transform  = `perspective(900px) rotateY(${rx*10}deg) rotateX(${-ry*6}deg) scale3d(1.02,1.02,1.02)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transition = 'transform .5s cubic-bezier(.16,1,.3,1),border-color .4s';
+    card.style.transform  = 'perspective(900px) rotateY(0deg) rotateX(0deg) scale3d(1,1,1)';
+  });
+});
+
+/* ─────────────────────────────────────────
+   SMOOTH SCROLL
+───────────────────────────────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
 </script>
-
-
 </body>
 </html>
