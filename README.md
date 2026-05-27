@@ -1,4 +1,4 @@
-Project Name (e.g., Portfolio)
+Project Name (JAMUN TREE CAFE)
 A high-performance portfolio website built with React, GSAP, and Three.js.
 
 🚀 Live Preview:
